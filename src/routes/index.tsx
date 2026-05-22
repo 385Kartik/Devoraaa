@@ -1,134 +1,154 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Phone, Instagram, Linkedin, Facebook, Mail, ArrowRight } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Code, Smartphone, Cloud, Bot, Gamepad2, Monitor, Check, Star } from "lucide-react";
+import { SiteLayout } from "@/components/SiteLayout";
 
 export const Route = createFileRoute("/")({
-  component: CaseStudyPage,
+  component: HomePage,
   head: () => ({
     meta: [
-      { title: "Case Studies — Devora" },
-      { name: "description", content: "Stories of innovation and growth — explore Devora's case studies across web and mobile applications." },
+      { title: "Devora — Custom Software Development for Web, Mobile, SaaS & AI" },
+      { name: "description", content: "Devora delivers scalable web, mobile, SaaS and AI automation solutions for startups and enterprises worldwide." },
     ],
   }),
 });
 
-type Category = "All" | "Web App" | "Mobile App";
-
-interface CaseStudy {
-  title: string;
-  subtitle: string;
-  image: string;
-  category: Exclude<Category, "All">;
-  slug: string;
-}
-
-const studies: CaseStudy[] = [
-  { title: "Sov Portal", subtitle: "Edtech Portal For Students & Agents", image: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp", category: "Web App", slug: "sov-portal" },
-  { title: "Wise Talk", subtitle: "Career Guidance Mobile Application", image: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp", category: "Mobile App", slug: "wise-talk" },
-  { title: "Connecting Soulmate", subtitle: "Matrimony Application", image: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp", category: "Web App", slug: "connecting-soulmate" },
-  { title: "Brand Monkey", subtitle: "Employee Management System", image: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png", category: "Web App", slug: "brand-monkey" },
-  { title: "Connecting Soulmate", subtitle: "Matrimony Mobile Application", image: "https://cms.slashifytech.in/uploads/CS_Mob_2859d898d7_425e6496b4.webp", category: "Mobile App", slug: "connecting-soulmate-mobile" },
-  { title: "MG Portal", subtitle: "Raam Group", image: "https://cms.slashifytech.in/uploads/MG_d0da169860_969f23e0a8.webp", category: "Web App", slug: "mg-portal" },
-  { title: "360 Car Protect - Mercedes Benz", subtitle: "Automotive & Warranty Management", image: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp", category: "Web App", slug: "360-car-protect" },
-  { title: "Online Filing India", subtitle: "Legal, Compliance & Business Services", image: "https://cms.slashifytech.in/uploads/online_filing_d1135c8254_43b90bb663.jpg", category: "Web App", slug: "online-filing-india" },
-  { title: "IDSSPL", subtitle: "Financial Technology & Reconciliation Systems", image: "https://cms.slashifytech.in/uploads/IDSSPL_Card_Banner_4856563ee0.png", category: "Web App", slug: "idsspl-fintech" },
-  { title: "Memoria", subtitle: "Social Memory App", image: "https://cms.slashifytech.in/uploads/Memoria_Card_Banner_087ecc87ab.png", category: "Mobile App", slug: "memoria-app" },
-  { title: "Qrynto - SaaS Software", subtitle: "Anti-Counterfeiting Platform", image: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png", category: "Web App", slug: "qrynto" },
-  { title: "Cricket Or Nothing", subtitle: "Real-Time Cricket Platform", image: "https://cms.slashifytech.in/uploads/CON_Banner_40e7c8bd75.jpg", category: "Web App", slug: "cricket-or-nothing" },
-  { title: "Shivorix Real Estate", subtitle: "Luxury Property Advisory", image: "https://cms.slashifytech.in/uploads/Shivorix_RE_banner_b39bbaf736.png", category: "Web App", slug: "shivorix-real-estate" },
+const services = [
+  { icon: Code, title: "Web App Development", desc: "Modern web app solutions built for speed, scalability, and long-term performance." },
+  { icon: Smartphone, title: "Mobile App Development", desc: "Secure enterprise-grade mobile apps with scalable architecture and seamless UX." },
+  { icon: Cloud, title: "Custom SaaS Development", desc: "From MVP launch to full-scale product growth with recurring revenue in mind." },
+  { icon: Bot, title: "AI Automation & Voice Agents", desc: "AI agents and automation that reduce manual work and boost operational efficiency." },
+  { icon: Gamepad2, title: "Game Development", desc: "Immersive game development with smooth performance and engaging gameplay." },
+  { icon: Monitor, title: "Desktop App Development", desc: "Reliable desktop apps for productivity tools, dashboards, and enterprise systems." },
 ];
 
-const navItems = ["Home", "About", "Services", "Integrations", "Case Studies", "Contact", "Blogs"];
+const projects = [
+  { title: "Sov Portal", sub: "Edtech Portal For Students & Agents", tag: "Web Application", img: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp" },
+  { title: "Wise Talk", sub: "Career Guidance Application", tag: "Mobile Application", img: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp" },
+  { title: "Connecting Soulmate", sub: "Matrimony Application", tag: "Web Application", img: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp" },
+  { title: "Brand Monkey", sub: "Employee Management System", tag: "Web Application", img: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png" },
+  { title: "Qrynto", sub: "Anti-Counterfeiting Platform", tag: "SaaS", img: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png" },
+  { title: "360 Car Protect", sub: "Automotive & Warranty Management", tag: "Web Application", img: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp" },
+];
 
-function TopBar() {
+const process = [
+  "Discovery & Consultation",
+  "Planning & Roadmap",
+  "Design & Prototyping",
+  "Development",
+  "QA Testing & Launch",
+  "Growth & Support",
+];
+
+const testimonials = [
+  { name: "Jaskirat", company: "BrandMonkey", text: "Loved working with the team. Young, charismatic, and highly skilled. Would highly recommend Devora." },
+  { name: "Karishma Punwani", company: "Connecting Soulmate", text: "An amazing team of hardworking talent. Worked on multiple projects, all delivered on time." },
+  { name: "Bharathi", company: "Buzzing Bee", text: "Devora did wonderful work creating my website. Patient, thoughtful, and attention to detail." },
+];
+
+function HomePage() {
   return (
-    <div className="w-full bg-primary text-primary-foreground">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-sm">
-        <a href="tel:+919431697649" className="flex items-center gap-2 font-medium">
-          <Phone className="h-4 w-4" /> +91 9431697649
-        </a>
-        <div className="flex items-center gap-4">
-          <Instagram className="h-4 w-4" />
-          <Linkedin className="h-4 w-4" />
-          <Facebook className="h-4 w-4" />
-          <Mail className="h-4 w-4" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Nav() {
-  return (
-    <header className="mx-auto mt-6 max-w-7xl px-6">
-      <div className="flex items-center justify-between rounded-2xl bg-card/60 px-6 py-4 backdrop-blur">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground">D</div>
-          <span className="text-xl font-semibold tracking-tight">Devora</span>
-        </div>
-        <nav className="hidden items-center gap-8 md:flex">
-          {navItems.map((n) => (
-            <a key={n} href="#" className={`text-sm transition-colors hover:text-primary ${n === "Case Studies" ? "text-primary" : "text-foreground/80"}`}>{n}</a>
-          ))}
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-function CaseStudyPage() {
-  const [filter, setFilter] = useState<Category>("All");
-  const filtered = filter === "All" ? studies : studies.filter((s) => s.category === filter);
-
-  return (
-    <div className="min-h-screen">
-      <TopBar />
-      <Nav />
-
+    <SiteLayout>
       <section className="mx-auto max-w-7xl px-6 pt-20 text-center">
-        <h1 className="text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl">
-          Stories of Innovation &<br />Growth
+        <h1 className="text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
+          Custom Software Development<br />for Web, Mobile, SaaS &{" "}
+          <span className="text-primary underline decoration-primary/40 underline-offset-8">AI Automation</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
-          Each project is a story of collaboration, problem-solving, and success.
+        <p className="mx-auto mt-7 max-w-2xl text-base text-muted-foreground md:text-lg">
+          Devora delivers scalable web app solutions, high-performing mobile apps, SaaS platforms, and intelligent automation for startups and enterprises worldwide.
         </p>
+        <div className="mt-9 flex flex-wrap justify-center gap-3">
+          <Link to="/contact" className="rounded-full bg-primary px-7 py-3 text-sm font-medium text-primary-foreground transition-transform hover:scale-105">
+            Book a Call
+          </Link>
+          <Link to="/case-study" className="rounded-full border border-border bg-card px-7 py-3 text-sm font-medium hover:border-primary">
+            Why Devora?
+          </Link>
+        </div>
+      </section>
 
-        <div className="mt-10 inline-flex rounded-full bg-card p-1.5">
-          {(["All", "Web App", "Mobile App"] as Category[]).map((c) => (
-            <button
-              key={c}
-              onClick={() => setFilter(c)}
-              className={`rounded-full px-6 py-2.5 text-sm font-medium transition-all ${
-                filter === c ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {c}
-            </button>
+      <section className="mx-auto mt-28 max-w-7xl px-6">
+        <p className="text-center text-sm uppercase tracking-widest text-primary">Services</p>
+        <h2 className="mt-2 text-center text-4xl font-bold md:text-5xl">What We Do</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">End-to-end digital solutions that launch, scale, and transform your business.</p>
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((s) => (
+            <div key={s.title} className="group rounded-2xl bg-card p-7 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                <s.icon className="h-6 w-6" />
+              </div>
+              <h3 className="mt-5 text-lg font-semibold">{s.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+              <Link to="/contact" className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                Discuss for Projects <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((s) => (
-            <article key={s.slug} className="group flex flex-col overflow-hidden rounded-2xl bg-card p-5 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
-              <div className="overflow-hidden rounded-xl bg-background">
-                <img src={s.image} alt={s.title} loading="lazy" className="h-64 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      <section className="mx-auto mt-28 max-w-7xl px-6">
+        <p className="text-center text-sm uppercase tracking-widest text-primary">Our Process</p>
+        <h2 className="mt-2 text-center text-4xl font-bold md:text-5xl">How We Work</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">A clear step-by-step process from idea to launch — no confusion.</p>
+        <div className="mt-12 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+          {process.map((step, i) => (
+            <div key={step} className="rounded-2xl border border-border bg-card p-5">
+              <div className="text-3xl font-black text-primary/60">0{i + 1}</div>
+              <p className="mt-3 text-sm font-medium">{step}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto mt-28 max-w-7xl px-6">
+        <p className="text-center text-sm uppercase tracking-widest text-primary">Our Work</p>
+        <h2 className="mt-2 text-center text-4xl font-bold md:text-5xl">Real Products We've Built</h2>
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {projects.map((p) => (
+            <article key={p.title} className="group flex flex-col overflow-hidden rounded-2xl bg-card p-5 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
+              <div className="overflow-hidden rounded-xl">
+                <img src={p.img} alt={p.title} loading="lazy" className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
-              <h3 className="mt-5 text-xl font-semibold">
-                {s.title} <span className="font-normal text-muted-foreground">{s.subtitle}</span>
-              </h3>
-              <a href="#" className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-secondary py-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
-                Read Case Study <ArrowRight className="h-4 w-4" />
-              </a>
+              <h3 className="mt-5 text-lg font-semibold">{p.title}</h3>
+              <p className="text-sm text-muted-foreground">{p.sub}</p>
+              <p className="mt-2 text-xs uppercase tracking-wider text-primary">{p.tag}</p>
             </article>
           ))}
         </div>
+        <div className="mt-10 text-center">
+          <Link to="/case-study" className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-3 text-sm font-medium text-primary hover:bg-primary hover:text-primary-foreground">
+            View all Projects <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </section>
 
-      <footer className="border-t border-border/50 py-8 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Devora. Your search all tech solution ends here.
-      </footer>
-    </div>
+      <section className="mx-auto mt-28 max-w-7xl px-6">
+        <h2 className="text-center text-4xl font-bold md:text-5xl">Loved by teams worldwide</h2>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {testimonials.map((t) => (
+            <div key={t.name} className="rounded-2xl bg-card p-7">
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
+              </div>
+              <p className="mt-4 text-sm text-foreground/90">"{t.text}"</p>
+              <div className="mt-5">
+                <p className="font-semibold">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.company}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto mt-28 max-w-5xl px-6">
+        <div className="rounded-3xl bg-gradient-to-br from-primary to-primary/70 p-12 text-center text-primary-foreground">
+          <h2 className="text-3xl font-bold md:text-5xl">Your vision deserves the right tech partner.</h2>
+          <p className="mx-auto mt-4 max-w-2xl opacity-90">Let's build something reliable, scalable, and future-ready together.</p>
+          <Link to="/contact" className="mt-7 inline-flex items-center gap-2 rounded-full bg-background px-7 py-3 text-sm font-medium text-foreground">
+            Book a Discovery Call <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+    </SiteLayout>
   );
 }
