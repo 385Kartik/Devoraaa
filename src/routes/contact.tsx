@@ -27,7 +27,8 @@ function ContactPage() {
       <section className="mx-auto mt-16 grid max-w-6xl gap-10 px-6 md:grid-cols-2">
         <div className="space-y-6">
           {[
-            { icon: Phone, label: "Phone", value: "+91 9431697649" },
+            { icon: Phone, label: "Phone", value: "+91 9619410050" },
+            { icon: Phone, label: "Phone", value: "+91 9321633746" },
             { icon: Mail, label: "Email", value: "hello@devora.com" },
             { icon: MapPin, label: "Office", value: "Bengaluru, India" },
           ].map((c) => (
