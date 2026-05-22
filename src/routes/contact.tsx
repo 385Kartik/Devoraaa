@@ -27,10 +27,10 @@ function ContactPage() {
       <section className="mx-auto mt-16 grid max-w-6xl gap-10 px-6 md:grid-cols-2">
         <div className="space-y-6">
           {[
-            { icon: Phone, label: "Phone", value: "+91 9619410050" },
             { icon: Phone, label: "Phone", value: "+91 9321633746" },
-            { icon: Mail, label: "Email", value: "hello@devora.com" },
-            { icon: MapPin, label: "Office", value: "Bengaluru, India" },
+            { icon: Phone, label: "Phone", value: "+91 9321633746" },
+            { icon: Mail, label: "Email", value: "officialdevora1@gmail.com" },
+            { icon: MapPin, label: "Office", value: "Mumbai, India" },
           ].map((c) => (
             <div key={c.label} className="flex items-start gap-4 rounded-2xl bg-card p-6">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary"><c.icon className="h-5 w-5" /></div>
@@ -62,7 +62,7 @@ function ContactPage() {
                 <Field label="Your name" placeholder="Jane Doe" />
                 <Field label="Email" type="email" placeholder="jane@company.com" />
               </div>
-              <Field label="Company" placeholder="Acme Inc." className="mt-4" />
+              <Field label="Project" placeholder="project name" className="mt-4" />
               <div className="mt-4">
                 <label className="text-xs uppercase tracking-wider text-muted-foreground">Project type</label>
                 <select className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none">
