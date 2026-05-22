@@ -45,7 +45,7 @@ function AboutPage() {
             From MVPs to enterprise platforms, we combine deep technical talent with product thinking to deliver software that customers love.
           </p>
           <ul className="mt-6 space-y-2">
-            {["ISO/IEC 27001:2022 Certified", "ISO 9001:2015 Certified", "MSME Registered"].map((c) => (
+            {["Truted", "relaible", "fast delivery"].map((c) => (
               <li key={c} className="flex items-center gap-2 text-sm"><Check className="h-4 w-4 text-primary" /> {c}</li>
             ))}
           </ul>
