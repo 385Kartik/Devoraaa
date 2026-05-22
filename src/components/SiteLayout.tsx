@@ -16,8 +16,11 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col">
       <div className="w-full bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-sm">
-          <a href="tel:+919431697649" className="flex items-center gap-2 font-medium">
-            <Phone className="h-4 w-4" /> +91 9431697649
+          <a href="tel:+919619410050" className="flex items-center gap-2 font-medium">
+            <Phone className="h-4 w-4" /> +91 9619410050
+          </a>
+          <a href="tel:+919321633746" className="flex items-center gap-2 font-medium">
+            <Phone className="h-4 w-4" /> +91 9321633746
           </a>
           <div className="flex items-center gap-4">
             <Instagram className="h-4 w-4" />
