@@ -17,7 +17,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
       <div className="w-full bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-sm">
           <a href="tel:+919619410050" className="flex items-center gap-2 font-medium">
-            <Phone className="h-4 w-4" /> +91 9619410050
+            <Phone className="h-4 w-4" /> +91 9321633746
           </a>
           <a href="tel:+919321633746" className="flex items-center gap-2 font-medium">
             <Phone className="h-4 w-4" /> +91 9321633746
@@ -86,8 +86,8 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
           <div>
             <h4 className="text-sm font-semibold">Get in touch</h4>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li>+91 9431697649</li>
-              <li>hello@devora.com</li>
+              <li>+91 9321633746</li>
+              <li>officialdevora1.com</li>
               <li><Link to="/contact" className="hover:text-primary">Contact us</Link></li>
             </ul>
           </div>
