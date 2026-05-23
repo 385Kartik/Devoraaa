@@ -1,5 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, Instagram, Linkedin, Facebook, Mail } from "lucide-react";
+import { Phone, Instagram, Linkedin, Mail } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -11,6 +17,19 @@ const navItems = [
   { label: "Blogs", to: "/blogs" },
 ] as const;
 
+const instagramLinks = [
+  { label: "@nayan._.sachani", url: "https://www.instagram.com/nayan._.sachani/" },
+  { label: "@p_kartik_385", url: "https://www.instagram.com/p_kartik_385/" },
+];
+
+const linkedinLinks = [
+  { label: "Kartik Parmar", url: "https://www.linkedin.com/in/parmarkartik385/" },
+  {
+    label: "Nayan Sachani",
+    url: "https://www.linkedin.com/in/nayan-sachani-636477316?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+  },
+];
+
 export function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
@@ -19,14 +38,34 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
           <a href="tel:+919321633746" className="flex items-center gap-2 font-medium">
             <Phone className="h-4 w-4" /> +91 9321633746
           </a>
-          <a href="tel:+919321633746" className="flex items-center gap-2 font-medium">
-            <Phone className="h-4 w-4" /> +91 9321633746
-          </a>
           <div className="flex items-center gap-4">
-            <Instagram className="h-4 w-4" />
-            <Linkedin className="h-4 w-4" />
-            <Facebook className="h-4 w-4" />
-            <Mail className="h-4 w-4" />
+            <DropdownMenu>
+              <DropdownMenuTrigger className="outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50 rounded" aria-label="Instagram">
+                <Instagram className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[200px]">
+                {instagramLinks.map((l) => (
+                  <DropdownMenuItem key={l.url} asChild>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50 rounded" aria-label="LinkedIn">
+                <Linkedin className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[200px]">
+                {linkedinLinks.map((l) => (
+                  <DropdownMenuItem key={l.url} asChild>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <a href="mailto:officialdevora1@gmail.com" aria-label="Email">
+              <Mail className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </div>
