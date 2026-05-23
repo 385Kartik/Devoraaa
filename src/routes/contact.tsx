@@ -28,7 +28,6 @@ function ContactPage() {
         <div className="space-y-6">
           {[
             { icon: Phone, label: "Phone", value: "+91 9321633746" },
-            { icon: Phone, label: "Phone", value: "+91 9321633746" },
             { icon: Mail, label: "Email", value: "officialdevora1@gmail.com" },
             { icon: MapPin, label: "Office", value: "Mumbai, India" },
           ].map((c) => (
