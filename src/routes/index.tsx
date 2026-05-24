@@ -407,6 +407,220 @@ function GlobeCanvas() {
 
   return <canvas ref={canvasRef} aria-hidden="true" className="h-full w-full" />;
 }
+
+// ─── ProcessFlow — zigzag diamonds connected by animated wavy dotted path ────
+function ProcessFlow() {
+  // SVG viewport dimensions (the coordinate space for the path)
+  const VBW = 1200;
+  const VBH = 360;
+
+  // Diamond center points: alternating up / down
+  // Even indices (0,2,4) → top row; odd (1,3,5) → bottom row
+  const pts: { x: number; y: number }[] = [
+    { x: 100,  y: 100 },   // 01 — up
+    { x: 300,  y: 260 },   // 02 — down
+    { x: 500,  y: 100 },   // 03 — up
+    { x: 700,  y: 260 },   // 04 — down
+    { x: 900,  y: 100 },   // 05 — up
+    { x: 1100, y: 260 },   // 06 — down
+  ];
+
+  // Build a smooth cubic-bezier path through the alternating points
+  let pathD = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i - 1];
+    const c = pts[i];
+    const mx = (p.x + c.x) / 2;
+    // Control points sit at the midpoint X, but keep each point's own Y
+    pathD += ` C ${mx} ${p.y} ${mx} ${c.y} ${c.x} ${c.y}`;
+  }
+
+  // Container pixel height for desktop (maps 1:1 to VBH via preserveAspectRatio="none")
+  const CONTAINER_H = 380;
+
+  return (
+    <div className="mt-16">
+
+      {/* ── DESKTOP ── */}
+      <div className="hidden md:block relative" style={{ height: CONTAINER_H }}>
+
+        {/* SVG overlay — draws only the path, no clip */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox={`0 0 ${VBW} ${VBH}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {/* Faint ghost track so the full route is visible before animation */}
+          <path
+            d={pathD}
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity={0.12}
+            strokeWidth={3}
+            strokeDasharray="10 8"
+            className="text-primary"
+          />
+
+          {/* Animated primary path — draws on scroll entry */}
+          <motion.path
+            d={pathD}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3}
+            strokeDasharray="10 8"
+            strokeLinecap="round"
+            className="text-primary"
+            style={{ strokeOpacity: 0.55 }}
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* Glowing pulse dot that travels the path after it draws */}
+          <motion.circle
+            r={5}
+            fill="currentColor"
+            className="text-primary"
+            fillOpacity={0.9}
+            initial={{ offsetDistance: "0%", opacity: 0 }}
+            whileInView={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+            style={{
+              // offsetPath only works as inline style; framer handles the rest
+              offsetPath: `path("${pathD}")`,
+            } as React.CSSProperties}
+          />
+        </svg>
+
+        {/* Diamond nodes */}
+        {process.map((step, i) => {
+          const pt    = pts[i];
+          const isUp  = i % 2 === 0;
+
+          // Convert SVG coordinates → percentage of container
+          // Since preserveAspectRatio="none", x% = pt.x/VBW and y% = pt.y/VBH
+          const leftPct = (pt.x / VBW) * 100;
+          const topPct  = (pt.y / VBH) * 100;
+
+          return (
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{
+                delay: i * 0.18 + 0.5,
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+              style={{
+                position: "absolute",
+                left:      `${leftPct}%`,
+                top:       `${topPct}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              {/* Step label — above for "up" nodes, below for "down" nodes */}
+              <div
+                style={{
+                  position:  "absolute",
+                  left:      "50%",
+                  transform: "translateX(-50%)",
+                  width:     "7.5rem",
+                  textAlign: "center",
+                  ...(isUp
+                    ? { bottom: "calc(100% + 14px)" }
+                    : { top:    "calc(100% + 14px)" }),
+                }}
+                className="text-xs font-semibold leading-tight text-foreground/75 tracking-wide"
+              >
+                {step}
+              </div>
+
+              {/* Outer glow ring — appears on hover */}
+              <motion.div
+                whileHover={{ opacity: 1, scale: 1.5 }}
+                initial={{ opacity: 0, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{ transform: "rotate(45deg)" }}
+                className="absolute inset-0 rounded-sm bg-primary/20 blur-md"
+              />
+
+              {/* Diamond body */}
+              <motion.div
+                whileHover={{ scale: 1.18 }}
+                transition={{ type: "spring", stiffness: 340, damping: 18 }}
+                style={{ transform: "rotate(45deg)" }}
+                className="relative z-10 h-[52px] w-[52px] rounded-[4px] border-2 border-primary/70 bg-card shadow-lg shadow-primary/15 flex items-center justify-center"
+              >
+                {/* Number — counter-rotated so it reads upright */}
+                <span
+                  style={{ transform: "rotate(-45deg)", display: "block" }}
+                  className="text-[13px] font-black text-primary leading-none select-none"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </motion.div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* ── MOBILE — vertical zigzag ── */}
+      <div className="md:hidden mt-10 relative px-6">
+        {/* Vertical dotted connector line */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2"
+          style={{
+            background:
+              "repeating-linear-gradient(to bottom, hsl(var(--primary)/0.4) 0px, hsl(var(--primary)/0.4) 6px, transparent 6px, transparent 14px)",
+          }}
+        />
+
+        <div className="relative flex flex-col gap-10">
+          {process.map((step, i) => {
+            const isLeft = i % 2 === 0;
+            return (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, x: isLeft ? -24 : 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
+                className={`relative flex items-center gap-5 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
+              >
+                {/* Diamond */}
+                <motion.div
+                  whileHover={{ scale: 1.12 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  style={{ transform: "rotate(45deg)", flexShrink: 0 }}
+                  className="h-11 w-11 rounded-[3px] border-2 border-primary/65 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
+                >
+                  <span
+                    style={{ transform: "rotate(-45deg)", display: "block" }}
+                    className="text-[11px] font-black text-primary leading-none select-none"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </motion.div>
+
+                {/* Label */}
+                <p className={`text-sm font-semibold leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
+                  {step}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 function HomePage() {
@@ -436,7 +650,6 @@ function HomePage() {
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-16 text-center">
-          {/* ↓ ONLY CHANGE: removed "border border-border/40" */}
           <motion.div initial="hidden" animate="show" variants={stagger}
             className="rounded-3xl bg-card/40 px-6 py-16 backdrop-blur-sm md:px-12 md:py-24">
             <motion.h1 variants={fadeUp}
@@ -522,16 +735,7 @@ function HomePage() {
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Our Process</motion.p>
           <motion.h2 variants={fadeUp} className="mt-2 text-center text-4xl font-bold md:text-5xl">How We Work</motion.h2>
         </motion.div>
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}
-          className="mt-12 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {process.map((step, i) => (
-            <motion.div key={step} variants={fadeUp} whileHover={{ scale: 1.05, borderColor: "var(--primary)" }}
-              className="rounded-2xl border border-border bg-card p-5">
-              <div className="text-3xl font-black text-primary/60">0{i+1}</div>
-              <p className="mt-3 text-sm font-medium">{step}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+        <ProcessFlow />
       </section>
 
       {/* PROJECTS */}
