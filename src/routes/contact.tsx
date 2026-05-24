@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Phone, Mail, MapPin, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Send, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
@@ -27,18 +27,23 @@ function ContactPage() {
       <section className="mx-auto mt-16 grid max-w-6xl gap-10 px-6 md:grid-cols-2">
         <div className="space-y-6">
           {[
-            { icon: Phone, label: "Phone", value: "+91 9321633746" },
-            { icon: Mail, label: "Email", value: "officialdevora1@gmail.com" },
+            { icon: Phone, label: "Phone", value: "+91 9321633746", href: "tel:+919321633746" },
+            { icon: MessageCircle, label: "WhatsApp", value: "Chat on WhatsApp", href: "https://wa.me/919321633746" },
+            { icon: Mail, label: "Email", value: "officialdevora1@gmail.com", href: "mailto:officialdevora1@gmail.com" },
             { icon: MapPin, label: "Office", value: "Mumbai, India" },
-          ].map((c) => (
-            <div key={c.label} className="flex items-start gap-4 rounded-2xl bg-card p-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary"><c.icon className="h-5 w-5" /></div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">{c.label}</p>
-                <p className="mt-1 text-lg font-semibold">{c.value}</p>
-              </div>
-            </div>
-          ))}
+          ].map((c) => {
+            const Wrapper: any = c.href ? "a" : "div";
+            const wrapperProps = c.href ? { href: c.href, target: c.href.startsWith("http") ? "_blank" : undefined, rel: "noopener noreferrer" } : {};
+            return (
+              <Wrapper key={c.label} {...wrapperProps} className="flex items-start gap-4 rounded-2xl bg-card p-6 transition-colors hover:bg-card/80">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary"><c.icon className="h-5 w-5" /></div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{c.label}</p>
+                  <p className="mt-1 text-lg font-semibold">{c.value}</p>
+                </div>
+              </Wrapper>
+            );
+          })}
           <div className="rounded-2xl bg-gradient-to-br from-primary to-primary/70 p-6 text-primary-foreground">
             <p className="text-sm opacity-90">Office hours</p>
             <p className="mt-1 text-lg font-semibold">Mon — Fri · 10:00 – 19:00 IST</p>
