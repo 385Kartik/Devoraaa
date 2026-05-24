@@ -414,15 +414,14 @@ function ProcessFlow() {
   const VBW = 1200;
   const VBH = 360;
 
-  // Diamond center points: alternating up / down
-  // Even indices (0,2,4) → top row; odd (1,3,5) → bottom row
+  // Diamond center points — spread vertically 15% more for section breathing room
   const pts: { x: number; y: number }[] = [
-    { x: 100,  y: 100 },   // 01 — up
-    { x: 300,  y: 260 },   // 02 — down
-    { x: 500,  y: 100 },   // 03 — up
-    { x: 700,  y: 260 },   // 04 — down
-    { x: 900,  y: 100 },   // 05 — up
-    { x: 1100, y: 260 },   // 06 — down
+    { x: 100,  y: 112 },   // 01 — up
+    { x: 300,  y: 298 },   // 02 — down
+    { x: 500,  y: 112 },   // 03 — up
+    { x: 700,  y: 298 },   // 04 — down
+    { x: 900,  y: 112 },   // 05 — up
+    { x: 1100, y: 298 },   // 06 — down
   ];
 
   // Build a smooth cubic-bezier path through the alternating points
@@ -435,8 +434,8 @@ function ProcessFlow() {
     pathD += ` C ${mx} ${p.y} ${mx} ${c.y} ${c.x} ${c.y}`;
   }
 
-  // Container pixel height for desktop (maps 1:1 to VBH via preserveAspectRatio="none")
-  const CONTAINER_H = 380;
+  // Container pixel height (+15% from original 380)
+  const CONTAINER_H = 437;
 
   return (
     <div className="mt-16">
@@ -497,25 +496,20 @@ function ProcessFlow() {
 
         {/* Diamond nodes */}
         {process.map((step, i) => {
-          const pt    = pts[i];
-          const isUp  = i % 2 === 0;
+          const pt   = pts[i];
+          const isUp = i % 2 === 0;
 
           const leftPct = (pt.x / VBW) * 100;
           const topPct  = (pt.y / VBH) * 100;
 
           return (
-            // ── Outer wrapper: entry animation only (opacity + scale in on scroll)
+            // ── Outer: scroll entry animation only
             <motion.div
               key={step}
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{
-                delay: i * 0.18 + 0.5,
-                type: "spring",
-                stiffness: 260,
-                damping: 20,
-              }}
+              transition={{ delay: i * 0.18 + 0.5, type: "spring", stiffness: 260, damping: 20 }}
               style={{
                 position: "absolute",
                 left:      `${leftPct}%`,
@@ -524,10 +518,9 @@ function ProcessFlow() {
               }}
             >
               {/*
-               * ── Inner hover hub ──────────────────────────────────────────
-               * initial="rest" + whileHover="hovered" + animate="rest"
-               * broadcasts the active variant name down to every child that
-               * declares a matching variants object — no prop drilling needed.
+               * ── Hover hub ─────────────────────────────────────────────────
+               * Broadcasts "rest" / "hovered" to every child with matching variants.
+               * Diamond (rotate 45) → Square (rotate 0) on hover.
                */}
               <motion.div
                 initial="rest"
@@ -535,61 +528,70 @@ function ProcessFlow() {
                 whileHover="hovered"
                 style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                {/* ── Step label: grows & brightens on hover ── */}
+                {/* Label — +20% size vs original xs; grows & nudges on hover */}
                 <motion.div
                   variants={{
-                    rest:    { scale: 1,    opacity: 0.72, y: 0 },
-                    hovered: { scale: 1.22, opacity: 1,    y: isUp ? -5 : 5 },
+                    rest:    { scale: 1,    opacity: 0.75, y: 0 },
+                    hovered: { scale: 1.22, opacity: 1,    y: isUp ? -6 : 6 },
                   }}
-                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
                   style={{
-                    position:  "absolute",
-                    left:      "50%",
-                    // Only translateX here — Y shift is handled by motion animate
-                    transform: "translateX(-50%)",
-                    width:     "7.5rem",
-                    textAlign: "center",
-                    ...(isUp
-                      ? { bottom: "calc(100% + 14px)" }
-                      : { top:    "calc(100% + 14px)" }),
-                    // Prevent layout shifts from text scaling
+                    position:        "absolute",
+                    left:            "50%",
+                    transform:       "translateX(-50%)",
+                    width:           "9rem",        // wider to fit bigger text
+                    textAlign:       "center",
                     transformOrigin: isUp ? "bottom center" : "top center",
+                    ...(isUp
+                      ? { bottom: "calc(100% + 16px)" }
+                      : { top:    "calc(100% + 16px)" }),
                   }}
-                  className="text-xs font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
+                  // text-[14px] = original text-xs 12px × 1.2 ≈ +20%
+                  className="text-[14px] font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
                 >
                   {step}
                 </motion.div>
 
-                {/* ── Glow ring behind diamond ── */}
+                {/* Glow aura — blooms on hover */}
                 <motion.div
                   variants={{
-                    rest:    { opacity: 0, scale: 0.8 },
-                    hovered: { opacity: 1, scale: 1.6 },
+                    rest:    { opacity: 0, scale: 0.7 },
+                    hovered: { opacity: 1, scale: 1.7 },
                   }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
-                  style={{ transform: "rotate(45deg)" }}
-                  className="absolute inset-0 rounded-sm bg-primary/25 blur-lg pointer-events-none"
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="absolute inset-0 rounded-sm bg-primary/20 blur-xl pointer-events-none"
                 />
 
-                {/* ── Diamond body ── */}
+                {/*
+                 * ── Diamond body ──────────────────────────────────────────
+                 * rest    → rotate(45deg)  = ◇ diamond
+                 * hovered → rotate(0deg)   = □ square
+                 *
+                 * Size: 52px × 1.2 = 62px (+20%)
+                 * framer-motion owns the rotation so NO style transform here.
+                 */}
                 <motion.div
                   variants={{
-                    rest:    { scale: 1,    borderColor: "hsl(var(--primary) / 0.60)" },
-                    hovered: { scale: 1.20, borderColor: "hsl(var(--primary) / 1.00)" },
+                    rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
+                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
                   }}
-                  transition={{ type: "spring", stiffness: 340, damping: 18 }}
-                  style={{ transform: "rotate(45deg)" }}
-                  className="relative z-10 h-[52px] w-[52px] rounded-[4px] border-2 bg-card shadow-lg shadow-primary/15 flex items-center justify-center cursor-default"
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="relative z-10 h-[62px] w-[62px] rounded-[4px] border-2 bg-card shadow-xl shadow-primary/15 flex items-center justify-center cursor-default"
                 >
-                  {/* Number — counter-rotated so it reads upright */}
+                  {/*
+                   * Number — counter-rotates to always read upright:
+                   * rest    → rotate(-45deg) keeps text legible inside diamond
+                   * hovered → rotate(0deg)   square orientation
+                   *
+                   * Font: 13px × 1.2 = ~16px (+20%)
+                   */}
                   <motion.span
                     variants={{
-                      rest:    { scale: 1 },
-                      hovered: { scale: 1.18 },
+                      rest:    { rotate: -45, scale: 1    },
+                      hovered: { rotate: 0,   scale: 1.15 },
                     }}
-                    transition={{ type: "spring", stiffness: 340, damping: 18 }}
-                    style={{ transform: "rotate(-45deg)", display: "block" }}
-                    className="text-[13px] font-black text-primary leading-none select-none"
+                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                    className="text-[16px] font-black text-primary leading-none select-none block"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </motion.span>
@@ -624,23 +626,46 @@ function ProcessFlow() {
                 transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
                 className={`relative flex items-center gap-5 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
               >
-                {/* Diamond */}
+              {/* Diamond → Square on hover (+20% size) */}
+              <motion.div
+                initial="rest"
+                animate="rest"
+                whileHover="hovered"
+                style={{ flexShrink: 0, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                {/* Glow aura */}
                 <motion.div
-                  whileHover={{ scale: 1.12 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  style={{ transform: "rotate(45deg)", flexShrink: 0 }}
-                  className="h-11 w-11 rounded-[3px] border-2 border-primary/65 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
+                  variants={{
+                    rest:    { opacity: 0, scale: 0.7 },
+                    hovered: { opacity: 1, scale: 1.6 },
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 rounded-[3px] bg-primary/20 blur-lg pointer-events-none"
+                />
+                {/* h-11=44px → 44×1.2=53px */}
+                <motion.div
+                  variants={{
+                    rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
+                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
+                  }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="relative z-10 h-[53px] w-[53px] rounded-[3px] border-2 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
                 >
-                  <span
-                    style={{ transform: "rotate(-45deg)", display: "block" }}
-                    className="text-[11px] font-black text-primary leading-none select-none"
+                  <motion.span
+                    variants={{
+                      rest:    { rotate: -45, scale: 1    },
+                      hovered: { rotate: 0,   scale: 1.12 },
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                    className="text-[13px] font-black text-primary leading-none select-none block"
                   >
                     {String(i + 1).padStart(2, "0")}
-                  </span>
+                  </motion.span>
                 </motion.div>
+              </motion.div>
 
-                {/* Label */}
-                <p className={`text-sm font-semibold leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
+                {/* Label — text-sm 14px × 1.2 ≈ 17px */}
+                <p className={`text-[17px] font-semibold leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
                   {step}
                 </p>
               </motion.div>
