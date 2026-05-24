@@ -39,6 +39,14 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             <Phone className="h-4 w-4" /> +91 9321633746
           </a>
           <div className="flex items-center gap-4">
+            <a
+              href="https://wa.me/919321633746"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="h-4 w-4" />
+            </a>
             <DropdownMenu>
               <DropdownMenuTrigger className="outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50 rounded" aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
@@ -51,6 +59,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
             <DropdownMenu>
               <DropdownMenuTrigger className="outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50 rounded" aria-label="LinkedIn">
                 <Linkedin className="h-4 w-4" />
