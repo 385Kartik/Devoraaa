@@ -24,12 +24,12 @@ const services = [
 ];
 
 const projects = [
-  { title: "Sov Portal",        sub: "Edtech Portal For Students & Agents",  tag: "Web Application", img: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp" },
-  { title: "Wise Talk",         sub: "Career Guidance Application",           tag: "Mobile Application", img: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp" },
-  { title: "Connecting Soulmate", sub: "Matrimony Application",              tag: "Web Application", img: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp" },
-  { title: "Brand Monkey",      sub: "Employee Management System",            tag: "Web Application", img: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png" },
-  { title: "Qrynto",            sub: "Anti-Counterfeiting Platform",          tag: "SaaS",            img: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png" },
-  { title: "360 Car Protect",   sub: "Automotive & Warranty Management",      tag: "Web Application", img: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp" },
+  { title: "PRINT-IT",        sub: "print docs from home",  tag: "Web Application", img: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp" },
+  { title: "Knish",         sub: "Clothing brand",           tag: "Web Application", img: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp" },
+  { title: "Wheatflow", sub: "wheat business",              tag: "Database management", img: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp" },
+  { title: "Navrang",      sub: "navratri accessories",            tag: "Web Application", img: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png" },
+  { title: "Get tutorials",            sub: "tutorials for engineering",          tag: "Web Application",            img: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png" },
+  { title: "College predictor",   sub: "help to select the college",      tag: "Web Application", img: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp" },
 ];
 
 const process = [
