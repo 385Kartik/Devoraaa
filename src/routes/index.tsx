@@ -190,10 +190,9 @@ function GlobeCanvas() {
 
     let animId: number;
 
-    // ── Rotation state ────────────────────────────────────────────────────────
-    let autoYaw   = 1.2;       // continuous auto-rotation around Y
-    let tiltX     = 0;         // current X-axis tilt (pitch), driven by mouse Y
-    let tiltYExtra= 0;         // extra Y offset driven by mouse X
+    let autoYaw   = 1.2;
+    let tiltX     = 0;
+    let tiltYExtra= 0;
     let targetTiltX     = 0;
     let targetTiltYExtra= 0;
 
@@ -216,7 +215,6 @@ function GlobeCanvas() {
       { from: [41.9,  12.5],   to: [34.0,  -118.2], alt: 0.2 },
     ] as { from: [number,number]; to: [number,number]; alt: number }[];
 
-    // Dot grid
     type GlobeDot = { lat: number; lng: number; r: number };
     const dots: GlobeDot[] = [];
     for (let lat = -80; lat <= 80; lat += 5) {
@@ -235,7 +233,6 @@ function GlobeCanvas() {
       color:    ARC_COLORS[i % ARC_COLORS.length],
     }));
 
-    // ── Math helpers ──────────────────────────────────────────────────────────
     type V3 = { x: number; y: number; z: number };
 
     const toVec3 = (lat: number, lng: number): V3 => {
@@ -266,10 +263,8 @@ function GlobeCanvas() {
       return { x: s1*a.x+s2*b.x, y: s1*a.y+s2*b.y, z: s1*a.z+s2*b.z };
     };
 
-    // ── Resize ────────────────────────────────────────────────────────────────
     const resize = () => { canvas!.width = canvas!.offsetWidth; canvas!.height = canvas!.offsetHeight; };
 
-    // ── Draw loop ─────────────────────────────────────────────────────────────
     const draw = () => {
       if (!canvas || !ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -284,7 +279,6 @@ function GlobeCanvas() {
 
       autoYaw += 0.003;
 
-      // ── Atmosphere ──────────────────────────────────────────────────────────
       const atmo = ctx.createRadialGradient(cx, cy, r*0.86, cx, cy, r*1.25);
       atmo.addColorStop(0,   "rgba(56,189,248,0.14)");
       atmo.addColorStop(0.55,"rgba(56,189,248,0.04)");
@@ -296,14 +290,12 @@ function GlobeCanvas() {
       rim.addColorStop(1, "rgba(255,255,255,0)");
       ctx.beginPath(); ctx.arc(cx, cy, r*1.08, 0, Math.PI*2); ctx.fillStyle = rim; ctx.fill();
 
-      // ── Globe body ──────────────────────────────────────────────────────────
       const body = ctx.createRadialGradient(cx - r*0.22, cy - r*0.22, 0, cx, cy, r);
       body.addColorStop(0,   "#0e2f82");
       body.addColorStop(0.5, "#062056");
       body.addColorStop(1,   "#020c2a");
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = body; ctx.fill();
 
-      // ── Dot grid ────────────────────────────────────────────────────────────
       ctx.save();
       ctx.beginPath(); ctx.arc(cx, cy, r - 0.5, 0, Math.PI*2); ctx.clip();
       for (const d of dots) {
@@ -317,7 +309,6 @@ function GlobeCanvas() {
       }
       ctx.restore();
 
-      // ── Animated arcs ────────────────────────────────────────────────────────
       for (let i = 0; i < arcPairs.length; i++) {
         const { from, to, alt } = arcPairs[i];
         const state = arcStates[i];
@@ -360,13 +351,11 @@ function GlobeCanvas() {
         }
       }
 
-      // ── Edge vignette ────────────────────────────────────────────────────────
       const edge = ctx.createRadialGradient(cx, cy, r*0.62, cx, cy, r);
       edge.addColorStop(0, "rgba(2,12,42,0)");
       edge.addColorStop(1, "rgba(2,12,42,0.6)");
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = edge; ctx.fill();
 
-      // ── Specular highlight ───────────────────────────────────────────────────
       const sx = cx - r*(0.3 + tiltYExtra*0.4);
       const sy = cy - r*(0.3 - tiltX*0.5);
       const spec = ctx.createRadialGradient(sx, sy, 0, sx, sy, r*0.55);
@@ -377,7 +366,6 @@ function GlobeCanvas() {
       animId = requestAnimationFrame(draw);
     };
 
-    // ── Mouse / touch — global tracking, normalized to canvas ─────────────────
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas!.getBoundingClientRect();
       const nx = (e.clientX - (rect.left + rect.width  / 2)) / (rect.width  / 2);
@@ -448,7 +436,7 @@ function HomePage() {
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-16 text-center">
-          {/* ↓ CHANGED: removed "border border-border/40" */}
+          {/* ↓ ONLY CHANGE: removed "border border-border/40" */}
           <motion.div initial="hidden" animate="show" variants={stagger}
             className="rounded-3xl bg-card/40 px-6 py-16 backdrop-blur-sm md:px-12 md:py-24">
             <motion.h1 variants={fadeUp}
@@ -579,8 +567,6 @@ function HomePage() {
 
       {/* TESTIMONIALS */}
       <section className="mx-auto mt-28 max-w-7xl px-6">
-
-        {/* Heading */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -598,16 +584,12 @@ function HomePage() {
           className="relative mx-auto -mb-16 h-[480px] w-full md:h-[580px]"
           style={{ overflow: "visible" }}
         >
-          {/* Sub-label */}
           <p className="absolute left-1/2 top-6 z-20 -translate-x-1/2 select-none text-center text-xs uppercase tracking-[0.25em] text-muted-foreground/50">
             Serving clients across the globe
           </p>
-
-          {/* Canvas fills the div — globe is centred inside */}
           <div className="absolute inset-0">
             <GlobeCanvas />
           </div>
-
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 z-10"
@@ -619,7 +601,6 @@ function HomePage() {
           />
         </motion.div>
 
-        {/* Testimonial cards */}
         <motion.div
           initial="hidden"
           whileInView="show"
