@@ -244,19 +244,16 @@ function GlobeCanvas() {
       return { x: Math.sin(phi)*Math.cos(theta), y: Math.cos(phi), z: Math.sin(phi)*Math.sin(theta) };
     };
 
-    // Rotate around X axis (pitch — cursor Y)
     const rotX = (v: V3, a: number): V3 => {
       const c = Math.cos(a), s = Math.sin(a);
       return { x: v.x, y: v.y*c - v.z*s, z: v.y*s + v.z*c };
     };
 
-    // Rotate around Y axis (yaw — auto + cursor X)
     const rotY = (v: V3, a: number): V3 => {
       const c = Math.cos(a), s = Math.sin(a);
       return { x: v.x*c + v.z*s, y: v.y, z: -v.x*s + v.z*c };
     };
 
-    // Combined: X-tilt first, then Y-rotation (order matters for natural feel)
     const applyRot = (v: V3): V3 => rotY(rotX(v, tiltX), autoYaw + tiltYExtra);
 
     const slerp = (a: V3, b: V3, t: number): V3 => {
@@ -281,12 +278,10 @@ function GlobeCanvas() {
       const cy = canvas.height / 2;
       const r  = Math.min(cx, cy) * 0.78;
 
-      // Smooth-lerp tilt toward mouse target
       const LERP = 0.045;
       tiltX      += (targetTiltX      - tiltX)      * LERP;
       tiltYExtra += (targetTiltYExtra - tiltYExtra)  * LERP;
 
-      // Slow auto-rotation
       autoYaw += 0.003;
 
       // ── Atmosphere ──────────────────────────────────────────────────────────
@@ -296,7 +291,6 @@ function GlobeCanvas() {
       atmo.addColorStop(1,   "rgba(56,189,248,0)");
       ctx.beginPath(); ctx.arc(cx, cy, r*1.25, 0, Math.PI*2); ctx.fillStyle = atmo; ctx.fill();
 
-      // Subtle white rim
       const rim = ctx.createRadialGradient(cx, cy, r*0.98, cx, cy, r*1.08);
       rim.addColorStop(0, "rgba(255,255,255,0.06)");
       rim.addColorStop(1, "rgba(255,255,255,0)");
@@ -352,14 +346,12 @@ function GlobeCanvas() {
         }
         ctx.strokeStyle = state.color; ctx.lineWidth = 1.6; ctx.globalAlpha = 0.78; ctx.stroke(); ctx.globalAlpha = 1;
 
-        // Head dot with halo
         const hb = slerp(v1, v2, head);
         const hs = 1 + alt * Math.sin(head * Math.PI);
         const hp = applyRot({ x: hb.x*hs, y: hb.y*hs, z: hb.z*hs });
         if (hp.z > 0) {
           const hx = cx + hp.x*r, hy = cy - hp.y*r;
           const halo = ctx.createRadialGradient(hx, hy, 0, hx, hy, 9);
-          // Expand shorthand hex to rgba properly
           const col = state.color;
           halo.addColorStop(0, col + "80");
           halo.addColorStop(1, col + "00");
@@ -375,7 +367,6 @@ function GlobeCanvas() {
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = edge; ctx.fill();
 
       // ── Specular highlight ───────────────────────────────────────────────────
-      // Shifts with tilt to reinforce the 3-D illusion
       const sx = cx - r*(0.3 + tiltYExtra*0.4);
       const sy = cy - r*(0.3 - tiltX*0.5);
       const spec = ctx.createRadialGradient(sx, sy, 0, sx, sy, r*0.55);
@@ -389,16 +380,13 @@ function GlobeCanvas() {
     // ── Mouse / touch — global tracking, normalized to canvas ─────────────────
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas!.getBoundingClientRect();
-      // Normalise to –1 … +1 relative to canvas centre
       const nx = (e.clientX - (rect.left + rect.width  / 2)) / (rect.width  / 2);
       const ny = (e.clientY - (rect.top  + rect.height / 2)) / (rect.height / 2);
       const inside = Math.abs(nx) <= 1.6 && Math.abs(ny) <= 1.6;
       if (inside) {
-        // Clamp so extreme mouse positions don't flip the globe
         targetTiltX      = Math.max(-0.55, Math.min(0.55, ny * 0.55));
         targetTiltYExtra = Math.max(-0.22, Math.min(0.22, nx * 0.18));
       } else {
-        // Mouse far away — return to upright
         targetTiltX      = 0;
         targetTiltYExtra = 0;
       }
@@ -460,8 +448,9 @@ function HomePage() {
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-16 text-center">
+          {/* ↓ CHANGED: removed "border border-border/40" */}
           <motion.div initial="hidden" animate="show" variants={stagger}
-            className="rounded-3xl border border-border/40 bg-card/40 px-6 py-16 backdrop-blur-sm md:px-12 md:py-24">
+            className="rounded-3xl bg-card/40 px-6 py-16 backdrop-blur-sm md:px-12 md:py-24">
             <motion.h1 variants={fadeUp}
               className="text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
               Custom Software Development<br />for Web, Mobile, SaaS &{" "}
@@ -601,12 +590,6 @@ function HomePage() {
           Loved by teams worldwide
         </motion.h2>
 
-        {/*
-          ── Globe — floats freely, no box, no border, bleeds into the page ──
-          The canvas is intentionally larger than the visual globe so the
-          radial-gradient overlay can fade it smoothly on every side.
-          overflow-visible ensures nothing is clipped by a parent rect.
-        */}
         <motion.div
           initial={{ opacity: 0, scale: 0.94 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -625,24 +608,18 @@ function HomePage() {
             <GlobeCanvas />
           </div>
 
-          {/*
-            Radial vignette — matches the page background exactly.
-            Single gradient does all four edges; no rectangular artifacts.
-            Adjust the stop positions if the globe clips too early/late.
-          */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 z-10"
             style={{
               background: [
-                /* outer radial fade — dissolves all edges */
                 "radial-gradient(ellipse 68% 72% at 50% 50%, transparent 38%, var(--background) 74%)",
               ].join(", "),
             }}
           />
         </motion.div>
 
-        {/* Testimonial cards — sit below the globe with a small negative margin overlap */}
+        {/* Testimonial cards */}
         <motion.div
           initial="hidden"
           whileInView="show"
