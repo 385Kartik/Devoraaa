@@ -42,13 +42,13 @@ const process = [
 ];
 
 const testimonials = [
-  { name: "Jaskirat", company: "BrandMonkey", text: "Loved working with the team. Young, charismatic, and highly skilled. Would highly recommend Devora." },
-  { name: "Karishma Punwani", company: "Connecting Soulmate", text: "An amazing team of hardworking talent. Worked on multiple projects, all delivered on time." },
-  { name: "Bharathi", company: "Buzzing Bee", text: "Devora did wonderful work creating my website. Patient, thoughtful, and attention to detail." },
+  { name: "Kirtan karkar", company: "Knish", text: "Loved working with the team. Young, charismatic, and highly skilled. Would highly recommend Devora." },
+  { name: "Yogesh Kalathiya", company: "Wheatflow", text: "An amazing team of hardworking talent. Worked on multiple projects, all delivered on time." },
+  { name: "Shubh Raval", company: "Shree gopal agency", text: "Devora did wonderful work creating my website. Patient, thoughtful, and attention to detail." },
 ];
 
 const clients = [
-  "BRAND MONKEY", "SOV PORTAL", "RAAM GROUP", "EPIC", "EON", "CRICKET", "BUZZ BEE", "PIXEL",
+  "KNISH", "WHEATFLOW", "GET TUTORIALS", "VIBETIX", "NAVRANG", "SHREE GOPAL AGENCY", "GET TASK", "COLLEGE PREDICTOR","SWAPORA", "RND FOODS","EZTRIP","PRINT-IT",
 ];
 
 const fadeUp = {
