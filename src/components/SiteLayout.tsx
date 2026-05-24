@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, Instagram, Linkedin, Mail } from "lucide-react";
+import { Phone, Instagram, Linkedin, Mail, MessageCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
