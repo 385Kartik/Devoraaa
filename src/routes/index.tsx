@@ -500,12 +500,11 @@ function ProcessFlow() {
           const pt    = pts[i];
           const isUp  = i % 2 === 0;
 
-          // Convert SVG coordinates → percentage of container
-          // Since preserveAspectRatio="none", x% = pt.x/VBW and y% = pt.y/VBH
           const leftPct = (pt.x / VBW) * 100;
           const topPct  = (pt.y / VBH) * 100;
 
           return (
+            // ── Outer wrapper: entry animation only (opacity + scale in on scroll)
             <motion.div
               key={step}
               initial={{ opacity: 0, scale: 0 }}
@@ -524,46 +523,77 @@ function ProcessFlow() {
                 transform: "translate(-50%, -50%)",
               }}
             >
-              {/* Step label — above for "up" nodes, below for "down" nodes */}
-              <div
-                style={{
-                  position:  "absolute",
-                  left:      "50%",
-                  transform: "translateX(-50%)",
-                  width:     "7.5rem",
-                  textAlign: "center",
-                  ...(isUp
-                    ? { bottom: "calc(100% + 14px)" }
-                    : { top:    "calc(100% + 14px)" }),
-                }}
-                className="text-xs font-semibold leading-tight text-foreground/75 tracking-wide"
-              >
-                {step}
-              </div>
-
-              {/* Outer glow ring — appears on hover */}
+              {/*
+               * ── Inner hover hub ──────────────────────────────────────────
+               * initial="rest" + whileHover="hovered" + animate="rest"
+               * broadcasts the active variant name down to every child that
+               * declares a matching variants object — no prop drilling needed.
+               */}
               <motion.div
-                whileHover={{ opacity: 1, scale: 1.5 }}
-                initial={{ opacity: 0, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                style={{ transform: "rotate(45deg)" }}
-                className="absolute inset-0 rounded-sm bg-primary/20 blur-md"
-              />
-
-              {/* Diamond body */}
-              <motion.div
-                whileHover={{ scale: 1.18 }}
-                transition={{ type: "spring", stiffness: 340, damping: 18 }}
-                style={{ transform: "rotate(45deg)" }}
-                className="relative z-10 h-[52px] w-[52px] rounded-[4px] border-2 border-primary/70 bg-card shadow-lg shadow-primary/15 flex items-center justify-center"
+                initial="rest"
+                animate="rest"
+                whileHover="hovered"
+                style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                {/* Number — counter-rotated so it reads upright */}
-                <span
-                  style={{ transform: "rotate(-45deg)", display: "block" }}
-                  className="text-[13px] font-black text-primary leading-none select-none"
+                {/* ── Step label: grows & brightens on hover ── */}
+                <motion.div
+                  variants={{
+                    rest:    { scale: 1,    opacity: 0.72, y: 0 },
+                    hovered: { scale: 1.22, opacity: 1,    y: isUp ? -5 : 5 },
+                  }}
+                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  style={{
+                    position:  "absolute",
+                    left:      "50%",
+                    // Only translateX here — Y shift is handled by motion animate
+                    transform: "translateX(-50%)",
+                    width:     "7.5rem",
+                    textAlign: "center",
+                    ...(isUp
+                      ? { bottom: "calc(100% + 14px)" }
+                      : { top:    "calc(100% + 14px)" }),
+                    // Prevent layout shifts from text scaling
+                    transformOrigin: isUp ? "bottom center" : "top center",
+                  }}
+                  className="text-xs font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
                 >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                  {step}
+                </motion.div>
+
+                {/* ── Glow ring behind diamond ── */}
+                <motion.div
+                  variants={{
+                    rest:    { opacity: 0, scale: 0.8 },
+                    hovered: { opacity: 1, scale: 1.6 },
+                  }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  style={{ transform: "rotate(45deg)" }}
+                  className="absolute inset-0 rounded-sm bg-primary/25 blur-lg pointer-events-none"
+                />
+
+                {/* ── Diamond body ── */}
+                <motion.div
+                  variants={{
+                    rest:    { scale: 1,    borderColor: "hsl(var(--primary) / 0.60)" },
+                    hovered: { scale: 1.20, borderColor: "hsl(var(--primary) / 1.00)" },
+                  }}
+                  transition={{ type: "spring", stiffness: 340, damping: 18 }}
+                  style={{ transform: "rotate(45deg)" }}
+                  className="relative z-10 h-[52px] w-[52px] rounded-[4px] border-2 bg-card shadow-lg shadow-primary/15 flex items-center justify-center cursor-default"
+                >
+                  {/* Number — counter-rotated so it reads upright */}
+                  <motion.span
+                    variants={{
+                      rest:    { scale: 1 },
+                      hovered: { scale: 1.18 },
+                    }}
+                    transition={{ type: "spring", stiffness: 340, damping: 18 }}
+                    style={{ transform: "rotate(-45deg)", display: "block" }}
+                    className="text-[13px] font-black text-primary leading-none select-none"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </motion.span>
+                </motion.div>
               </motion.div>
             </motion.div>
           );
