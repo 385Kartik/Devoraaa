@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Code, Smartphone, Cloud, Bot, Gamepad2, Monitor, Star } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 
 export const Route = createFileRoute("/")({
@@ -410,47 +410,38 @@ function GlobeCanvas() {
 
 // ─── ProcessFlow — zigzag diamonds connected by animated wavy dotted path ────
 function ProcessFlow() {
-  // SVG viewport dimensions (the coordinate space for the path)
   const VBW = 1200;
   const VBH = 360;
 
-  // Diamond center points — spread vertically 15% more for section breathing room
   const pts: { x: number; y: number }[] = [
-    { x: 100,  y: 112 },   // 01 — up
-    { x: 300,  y: 298 },   // 02 — down
-    { x: 500,  y: 112 },   // 03 — up
-    { x: 700,  y: 298 },   // 04 — down
-    { x: 900,  y: 112 },   // 05 — up
-    { x: 1100, y: 298 },   // 06 — down
+    { x: 100,  y: 112 },
+    { x: 300,  y: 298 },
+    { x: 500,  y: 112 },
+    { x: 700,  y: 298 },
+    { x: 900,  y: 112 },
+    { x: 1100, y: 298 },
   ];
 
-  // Build a smooth cubic-bezier path through the alternating points
   let pathD = `M ${pts[0].x} ${pts[0].y}`;
   for (let i = 1; i < pts.length; i++) {
     const p = pts[i - 1];
     const c = pts[i];
     const mx = (p.x + c.x) / 2;
-    // Control points sit at the midpoint X, but keep each point's own Y
     pathD += ` C ${mx} ${p.y} ${mx} ${c.y} ${c.x} ${c.y}`;
   }
 
-  // Container pixel height (+15% from original 380)
   const CONTAINER_H = 437;
 
   return (
     <div className="mt-16">
-
       {/* ── DESKTOP ── */}
       <div className="hidden md:block relative" style={{ height: CONTAINER_H }}>
-
-        {/* SVG overlay — draws only the path, no clip */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           viewBox={`0 0 ${VBW} ${VBH}`}
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          {/* Faint ghost track so the full route is visible before animation */}
           <path
             d={pathD}
             fill="none"
@@ -460,8 +451,6 @@ function ProcessFlow() {
             strokeDasharray="10 8"
             className="text-primary"
           />
-
-          {/* Animated primary path — draws on scroll entry */}
           <motion.path
             d={pathD}
             fill="none"
@@ -476,8 +465,6 @@ function ProcessFlow() {
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1] }}
           />
-
-          {/* Glowing pulse dot that travels the path after it draws */}
           <motion.circle
             r={5}
             fill="currentColor"
@@ -488,22 +475,18 @@ function ProcessFlow() {
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
             style={{
-              // offsetPath only works as inline style; framer handles the rest
               offsetPath: `path("${pathD}")`,
             } as React.CSSProperties}
           />
         </svg>
 
-        {/* Diamond nodes */}
         {process.map((step, i) => {
           const pt   = pts[i];
           const isUp = i % 2 === 0;
-
           const leftPct = (pt.x / VBW) * 100;
           const topPct  = (pt.y / VBH) * 100;
 
           return (
-            // ── Outer: scroll entry animation only
             <motion.div
               key={step}
               initial={{ opacity: 0, scale: 0 }}
@@ -517,18 +500,12 @@ function ProcessFlow() {
                 transform: "translate(-50%, -50%)",
               }}
             >
-              {/*
-               * ── Hover hub ─────────────────────────────────────────────────
-               * Broadcasts "rest" / "hovered" to every child with matching variants.
-               * Diamond (rotate 45) → Square (rotate 0) on hover.
-               */}
               <motion.div
                 initial="rest"
                 animate="rest"
                 whileHover="hovered"
                 style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                {/* Label — +20% size vs original xs; grows & nudges on hover */}
                 <motion.div
                   variants={{
                     rest:    { scale: 1,    opacity: 0.75, y: 0 },
@@ -539,20 +516,18 @@ function ProcessFlow() {
                     position:        "absolute",
                     left:            "50%",
                     transform:       "translateX(-50%)",
-                    width:           "9rem",        // wider to fit bigger text
+                    width:           "9rem",
                     textAlign:       "center",
                     transformOrigin: isUp ? "bottom center" : "top center",
                     ...(isUp
                       ? { bottom: "calc(100% + 16px)" }
                       : { top:    "calc(100% + 16px)" }),
                   }}
-                  // text-[14px] = original text-xs 12px × 1.2 ≈ +20%
                   className="text-[14px] font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
                 >
                   {step}
                 </motion.div>
 
-                {/* Glow aura — blooms on hover */}
                 <motion.div
                   variants={{
                     rest:    { opacity: 0, scale: 0.7 },
@@ -562,14 +537,6 @@ function ProcessFlow() {
                   className="absolute inset-0 rounded-sm bg-primary/20 blur-xl pointer-events-none"
                 />
 
-                {/*
-                 * ── Diamond body ──────────────────────────────────────────
-                 * rest    → rotate(45deg)  = ◇ diamond
-                 * hovered → rotate(0deg)   = □ square
-                 *
-                 * Size: 52px × 1.2 = 62px (+20%)
-                 * framer-motion owns the rotation so NO style transform here.
-                 */}
                 <motion.div
                   variants={{
                     rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
@@ -578,13 +545,6 @@ function ProcessFlow() {
                   transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   className="relative z-10 h-[62px] w-[62px] rounded-[4px] border-2 bg-card shadow-xl shadow-primary/15 flex items-center justify-center cursor-default"
                 >
-                  {/*
-                   * Number — counter-rotates to always read upright:
-                   * rest    → rotate(-45deg) keeps text legible inside diamond
-                   * hovered → rotate(0deg)   square orientation
-                   *
-                   * Font: 13px × 1.2 = ~16px (+20%)
-                   */}
                   <motion.span
                     variants={{
                       rest:    { rotate: -45, scale: 1    },
@@ -604,7 +564,6 @@ function ProcessFlow() {
 
       {/* ── MOBILE — vertical zigzag ── */}
       <div className="md:hidden mt-10 relative px-6">
-        {/* Vertical dotted connector line */}
         <div
           aria-hidden="true"
           className="absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2"
@@ -626,45 +585,41 @@ function ProcessFlow() {
                 transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
                 className={`relative flex items-center gap-5 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
               >
-              {/* Diamond → Square on hover (+20% size) */}
-              <motion.div
-                initial="rest"
-                animate="rest"
-                whileHover="hovered"
-                style={{ flexShrink: 0, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
-                {/* Glow aura */}
                 <motion.div
-                  variants={{
-                    rest:    { opacity: 0, scale: 0.7 },
-                    hovered: { opacity: 1, scale: 1.6 },
-                  }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0 rounded-[3px] bg-primary/20 blur-lg pointer-events-none"
-                />
-                {/* h-11=44px → 44×1.2=53px */}
-                <motion.div
-                  variants={{
-                    rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
-                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
-                  }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                  className="relative z-10 h-[53px] w-[53px] rounded-[3px] border-2 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
+                  initial="rest"
+                  animate="rest"
+                  whileHover="hovered"
+                  style={{ flexShrink: 0, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
                 >
-                  <motion.span
+                  <motion.div
                     variants={{
-                      rest:    { rotate: -45, scale: 1    },
-                      hovered: { rotate: 0,   scale: 1.12 },
+                      rest:    { opacity: 0, scale: 0.7 },
+                      hovered: { opacity: 1, scale: 1.6 },
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 rounded-[3px] bg-primary/20 blur-lg pointer-events-none"
+                  />
+                  <motion.div
+                    variants={{
+                      rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
+                      hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
                     }}
                     transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                    className="text-[13px] font-black text-primary leading-none select-none block"
+                    className="relative z-10 h-[53px] w-[53px] rounded-[3px] border-2 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
                   >
-                    {String(i + 1).padStart(2, "0")}
-                  </motion.span>
+                    <motion.span
+                      variants={{
+                        rest:    { rotate: -45, scale: 1    },
+                        hovered: { rotate: 0,   scale: 1.12 },
+                      }}
+                      transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                      className="text-[13px] font-black text-primary leading-none select-none block"
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </motion.span>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
 
-                {/* Label — text-sm 14px × 1.2 ≈ 17px */}
                 <p className={`text-[17px] font-semibold leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
                   {step}
                 </p>
@@ -676,6 +631,85 @@ function ProcessFlow() {
     </div>
   );
 }
+
+// ─── TestimonialMarquee ───────────────────────────────────────────────────────
+function TestimonialMarquee() {
+  const [paused, setPaused] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Triple the array so there's always content filling the track at any screen width
+  const repeated = [...testimonials, ...testimonials, ...testimonials];
+
+  return (
+    <>
+      <style>{`
+        @keyframes testimonial-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(calc(-100% / 3)); }
+        }
+      `}</style>
+
+      <div
+        className="mt-16 overflow-hidden"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => {
+          setPaused(false);
+          setHoveredIndex(null);
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "24px",
+            width: "max-content",
+            animation: "testimonial-scroll 22s linear infinite",
+            animationPlayState: paused ? "paused" : "running",
+          }}
+        >
+          {repeated.map((t, i) => (
+            <motion.div
+              key={i}
+              onMouseEnter={() => setHoveredIndex(i)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              animate={{
+                opacity:
+                  hoveredIndex === null
+                    ? 1
+                    : hoveredIndex === i
+                    ? 1
+                    : 0.22,
+                scale: hoveredIndex === i ? 1.04 : 1,
+              }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              style={{
+                minWidth: "clamp(280px, 40vw, 500px)",
+                flexShrink: 0,
+                boxShadow:
+                  hoveredIndex === i
+                    ? "0 0 0 1.5px hsl(var(--primary)), 0 16px 48px hsl(var(--primary) / 0.20)"
+                    : "none",
+                transition: "box-shadow 0.3s ease",
+              }}
+              className="rounded-2xl border border-border/40 bg-card p-7 cursor-default select-none"
+            >
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, si) => (
+                  <Star key={si} className="h-4 w-4 fill-primary text-primary" />
+                ))}
+              </div>
+              <p className="mt-4 text-sm text-foreground/90">"{t.text}"</p>
+              <div className="mt-5">
+                <p className="font-semibold">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.company}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 function HomePage() {
@@ -853,36 +887,16 @@ function HomePage() {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 z-10"
             style={{
-              background: [
+              background:
                 "radial-gradient(ellipse 68% 72% at 50% 50%, transparent 38%, var(--background) 74%)",
-              ].join(", "),
             }}
           />
         </motion.div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-          className="relative z-20 mt-0 grid gap-6 md:grid-cols-3"
-        >
-          {testimonials.map((t) => (
-            <motion.div key={t.name} variants={fadeUp} whileHover={{ y: -6 }}
-              className="rounded-2xl border border-border/40 bg-card p-7">
-              <div className="flex gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                ))}
-              </div>
-              <p className="mt-4 text-sm text-foreground/90">"{t.text}"</p>
-              <div className="mt-5">
-                <p className="font-semibold">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.company}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Marquee replaces old 3-column grid */}
+        <div className="relative z-20 mt-0">
+          <TestimonialMarquee />
+        </div>
       </section>
 
       {/* CTA */}
