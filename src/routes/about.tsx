@@ -425,7 +425,6 @@ function AboutPage() {
           </div>
         </div>
 
-
         <div className="mt-10 space-y-4 text-muted-foreground">
           <p>
             Devora is a product-focused technology company founded by engineers and strategists
@@ -571,8 +570,9 @@ function AboutPage() {
               viewport={{ once: true }}
               variants={fadeUp}
               className="overflow-hidden rounded-3xl bg-card"
+              style={{ clipPath: "inset(0 0 20% 0 round 1.5rem)" }}
             >
-              <img src={kartikImg} alt="Kartik Parmar — Co-founder & CTO, Devora" className="h-full w-full object-cover" />
+              <img src={kartikImg} alt="Kartik Parmar — Co-founder & CTO, Devora" className="h-full w-full object-cover object-top" />
             </motion.div>
           </div>
           <div className="md:order-1">
