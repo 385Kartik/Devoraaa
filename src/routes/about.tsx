@@ -89,6 +89,257 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 } as const;
 
+// ─── DifferentFlow — same zigzag diamond animation as ProcessFlow in index.tsx ─
+function DifferentFlow() {
+  // SVG viewport dimensions
+  const VBW = 1200;
+  const VBH = 360;
+
+  // Diamond centre points — alternating up/down (same layout as ProcessFlow)
+  const pts: { x: number; y: number }[] = [
+    { x: 100,  y: 112 },  // 01 — up
+    { x: 300,  y: 298 },  // 02 — down
+    { x: 500,  y: 112 },  // 03 — up
+    { x: 700,  y: 298 },  // 04 — down
+    { x: 900,  y: 112 },  // 05 — up
+    { x: 1100, y: 298 },  // 06 — down
+  ];
+
+  // Smooth cubic-bezier path through the alternating points
+  let pathD = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i - 1];
+    const c = pts[i];
+    const mx = (p.x + c.x) / 2;
+    pathD += ` C ${mx} ${p.y} ${mx} ${c.y} ${c.x} ${c.y}`;
+  }
+
+  const CONTAINER_H = 437;
+
+  return (
+    <div className="mt-16">
+
+      {/* ── DESKTOP ── */}
+      <div className="hidden md:block relative" style={{ height: CONTAINER_H }}>
+
+        {/* SVG path overlay */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox={`0 0 ${VBW} ${VBH}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {/* Ghost track — faint full route always visible */}
+          <path
+            d={pathD}
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity={0.12}
+            strokeWidth={3}
+            strokeDasharray="10 8"
+            className="text-primary"
+          />
+
+          {/* Animated primary path — draws on scroll entry */}
+          <motion.path
+            d={pathD}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3}
+            strokeDasharray="10 8"
+            strokeLinecap="round"
+            className="text-primary"
+            style={{ strokeOpacity: 0.55 }}
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* Glowing pulse dot that travels the path */}
+          <motion.circle
+            r={5}
+            fill="currentColor"
+            className="text-primary"
+            fillOpacity={0.9}
+            initial={{ offsetDistance: "0%", opacity: 0 }}
+            whileInView={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+            style={{
+              offsetPath: `path("${pathD}")`,
+            } as React.CSSProperties}
+          />
+        </svg>
+
+        {/* Diamond nodes */}
+        {different.map((step, i) => {
+          const pt   = pts[i];
+          const isUp = i % 2 === 0;
+
+          const leftPct = (pt.x / VBW) * 100;
+          const topPct  = (pt.y / VBH) * 100;
+
+          return (
+            // Scroll-entry animation
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ delay: i * 0.18 + 0.5, type: "spring", stiffness: 260, damping: 20 }}
+              style={{
+                position: "absolute",
+                left:      `${leftPct}%`,
+                top:       `${topPct}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              {/*
+               * Hover hub — broadcasts "rest" / "hovered" to children.
+               * Diamond (rotate 45°) → Square (rotate 0°) on hover.
+               */}
+              <motion.div
+                initial="rest"
+                animate="rest"
+                whileHover="hovered"
+                style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                {/* Label — nudges & scales on hover */}
+                <motion.div
+                  variants={{
+                    rest:    { scale: 1,    opacity: 0.75, y: 0 },
+                    hovered: { scale: 1.22, opacity: 1,    y: isUp ? -6 : 6 },
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  style={{
+                    position:        "absolute",
+                    left:            "50%",
+                    transform:       "translateX(-50%)",
+                    width:           "10rem",
+                    textAlign:       "center",
+                    transformOrigin: isUp ? "bottom center" : "top center",
+                    ...(isUp
+                      ? { bottom: "calc(100% + 16px)" }
+                      : { top:    "calc(100% + 16px)" }),
+                  }}
+                  className="text-[14px] font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
+                >
+                  {step}
+                </motion.div>
+
+                {/* Glow aura — blooms on hover */}
+                <motion.div
+                  variants={{
+                    rest:    { opacity: 0, scale: 0.7 },
+                    hovered: { opacity: 1, scale: 1.7 },
+                  }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="absolute inset-0 rounded-sm bg-primary/20 blur-xl pointer-events-none"
+                />
+
+                {/* Diamond body: rotate 45° → 0° on hover */}
+                <motion.div
+                  variants={{
+                    rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
+                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
+                  }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="relative z-10 h-[62px] w-[62px] rounded-[4px] border-2 bg-card shadow-xl shadow-primary/15 flex items-center justify-center cursor-default"
+                >
+                  {/* Number — counter-rotates so it always reads upright */}
+                  <motion.span
+                    variants={{
+                      rest:    { rotate: -45, scale: 1    },
+                      hovered: { rotate: 0,   scale: 1.15 },
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                    className="text-[16px] font-black text-primary leading-none select-none block"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </motion.span>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* ── MOBILE — vertical zigzag (left-right alternating) ── */}
+      <div className="md:hidden mt-10 relative px-6">
+        {/* Vertical dotted connector line */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2"
+          style={{
+            background:
+              "repeating-linear-gradient(to bottom, hsl(var(--primary)/0.4) 0px, hsl(var(--primary)/0.4) 6px, transparent 6px, transparent 14px)",
+          }}
+        />
+
+        <div className="relative flex flex-col gap-10">
+          {different.map((step, i) => {
+            const isLeft = i % 2 === 0;
+            return (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, x: isLeft ? -24 : 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
+                className={`relative flex items-center gap-5 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
+              >
+                {/* Diamond → Square on hover */}
+                <motion.div
+                  initial="rest"
+                  animate="rest"
+                  whileHover="hovered"
+                  style={{ flexShrink: 0, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
+                >
+                  {/* Glow aura */}
+                  <motion.div
+                    variants={{
+                      rest:    { opacity: 0, scale: 0.7 },
+                      hovered: { opacity: 1, scale: 1.6 },
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 rounded-[3px] bg-primary/20 blur-lg pointer-events-none"
+                  />
+                  <motion.div
+                    variants={{
+                      rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
+                      hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                    className="relative z-10 h-[53px] w-[53px] rounded-[3px] border-2 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
+                  >
+                    <motion.span
+                      variants={{
+                        rest:    { rotate: -45, scale: 1    },
+                        hovered: { rotate: 0,   scale: 1.12 },
+                      }}
+                      transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                      className="text-[13px] font-black text-primary leading-none select-none block"
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </motion.span>
+                  </motion.div>
+                </motion.div>
+
+                {/* Label */}
+                <p className={`text-[17px] font-semibold leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
+                  {step}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function AboutPage() {
   return (
     <SiteLayout>
@@ -213,28 +464,14 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* WHAT MAKES DEVORA DIFFERENT */}
+      {/* WHAT MAKES DEVORA DIFFERENT — now with DifferentFlow animation */}
       <section className="mx-auto mt-28 max-w-7xl px-6">
         <p className="text-sm uppercase tracking-widest text-primary">Why Devora</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">What Makes Devora Different</h2>
         <p className="mt-4 max-w-2xl text-muted-foreground">
           Strategy, scalability, and execution — all aligned to your business goals.
         </p>
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {different.map((d, i) => (
-            <motion.div
-              key={d}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
-            >
-              <div className="text-3xl font-black text-primary/30">0{i + 1}</div>
-              <h3 className="mt-3 text-lg font-semibold">{d}</h3>
-            </motion.div>
-          ))}
-        </div>
+        <DifferentFlow />
       </section>
 
       {/* MISSION & VISION */}
