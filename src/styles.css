@@ -50,3 +50,8 @@
   * { border-color: var(--color-border); }
   html, body { background-color: oklch(0.12 0.005 260); color: var(--color-foreground); font-family: var(--font-display); }
 }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
