@@ -1,12 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export const Route = createFileRoute("/integrations")({
   component: IntegrationsPage,
   head: () => ({
     meta: [
       { title: "Integrations — Devora" },
-      { name: "description", content: "Devora integrates with 42+ leading platforms across payments, AI, communication, analytics, CRM, and more." },
+      {
+        name: "description",
+        content:
+          "Devora integrates with 42+ leading platforms across payments, AI, communication, analytics, CRM, and more.",
+      },
     ],
   }),
 });
@@ -14,7 +19,8 @@ export const Route = createFileRoute("/integrations")({
 type Item = { name: string; logo?: string; letter?: string; desc: string };
 type Category = { id: string; name: string; subtitle: string; items: Item[] };
 
-const cdn = (slug: string, color?: string) => `https://cdn.simpleicons.org/${slug}${color ? `/${color}` : ""}`;
+const cdn = (slug: string, color?: string) =>
+  `https://cdn.simpleicons.org/${slug}${color ? `/${color}` : ""}`;
 
 const categories: Category[] = [
   {
@@ -150,11 +156,17 @@ const categories: Category[] = [
   },
 ];
 
+/* ── Logo badge ─────────────────────────────────────────────────────────── */
 function LogoBadge({ item }: { item: Item }) {
   if (item.logo) {
     return (
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-background">
-        <img src={item.logo} alt={`${item.name} logo`} className="h-7 w-7" loading="lazy" />
+        <img
+          src={item.logo}
+          alt={`${item.name} logo`}
+          className="h-7 w-7"
+          loading="lazy"
+        />
       </div>
     );
   }
@@ -165,27 +177,159 @@ function LogoBadge({ item }: { item: Item }) {
   );
 }
 
+/* ── Animated card ───────────────────────────────────────────────────────── */
+function AnimatedCard({ item, index }: { item: Item; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.12 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="group flex items-start gap-4 rounded-2xl bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible
+          ? "translateY(0px)"
+          : "translateY(22px)",
+        transition: `opacity 0.45s ease ${index * 60}ms, transform 0.45s ease ${index * 60}ms, box-shadow 0.3s ease, translate 0.3s ease`,
+      }}
+    >
+      <LogoBadge item={item} />
+      <div className="min-w-0">
+        <h3 className="text-lg font-semibold">{item.name}</h3>
+        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+          {item.desc}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ── Category section ────────────────────────────────────────────────────── */
+function CategorySection({ cat }: { cat: Category }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [titleVisible, setTitleVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTitleVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} id={cat.id} className="scroll-mt-24">
+      <div
+        style={{
+          opacity: titleVisible ? 1 : 0,
+          transform: titleVisible ? "translateY(0)" : "translateY(14px)",
+          transition: "opacity 0.4s ease, transform 0.4s ease",
+        }}
+      >
+        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+          {cat.name}
+        </h2>
+        <p className="mt-2 text-muted-foreground">{cat.subtitle}</p>
+      </div>
+      <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+        {cat.items.map((it, i) => (
+          <AnimatedCard key={it.name} item={it} index={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Main page ───────────────────────────────────────────────────────────── */
 function IntegrationsPage() {
+  const [activeCategory, setActiveCategory] = useState<string>(categories[0].id);
+
+  // Track which section is in view → highlight sidebar
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    categories.forEach((cat) => {
+      const el = document.getElementById(cat.id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveCategory(cat.id);
+        },
+        // fires when section enters the middle band of the viewport
+        { rootMargin: "-25% 0px -65% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  const handleSidebarClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+      e.preventDefault();
+      setActiveCategory(id);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    []
+  );
+
   return (
     <SiteLayout>
-      {/* Hero */}
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="mx-auto mt-6 max-w-7xl px-6">
         <div className="rounded-3xl bg-card/60 px-6 py-20 text-center md:py-28">
           <span className="inline-block rounded-full bg-background px-5 py-2 text-sm font-medium text-foreground/90">
             42+ Integrations
           </span>
           <h1 className="mx-auto mt-8 max-w-4xl text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl">
-            Third-party integrations we <span className="text-primary">ship every day</span>
+            Third-party integrations we{" "}
+            <span className="text-primary">ship every day</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
-            From payments and AI to logistics and analytics — we plug your product into the platforms your business already runs on. Battle-tested, production-ready, and built to scale.
+            From payments and AI to logistics and analytics — we plug your
+            product into the platforms your business already runs on.
+            Battle-tested, production-ready, and built to scale.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link to="/contact" className="rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5">
+            <Link
+              to="/contact"
+              className="rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+            >
               Discuss your integration
             </Link>
-            <a href="#categories" className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/60">
+            <a
+              href="#payments"
+              onClick={(e) => handleSidebarClick(e, "payments")}
+              className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/60"
+            >
               Explore by category
             </a>
           </div>
@@ -197,64 +341,88 @@ function IntegrationsPage() {
               { k: "50+", v: "Production deployments" },
             ].map((s) => (
               <div key={s.v}>
-                <div className="text-4xl font-bold text-primary md:text-5xl">{s.k}</div>
-                <div className="mt-2 text-xs text-muted-foreground md:text-sm">{s.v}</div>
+                <div className="text-4xl font-bold text-primary md:text-5xl">
+                  {s.k}
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground md:text-sm">
+                  {s.v}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Category nav */}
-      <section id="categories" className="mx-auto mt-10 max-w-7xl px-6">
-        <div className="scrollbar-none flex gap-3 overflow-x-auto pb-2">
-          {categories.map((c) => (
-            <a
-              key={c.id}
-              href={`#${c.id}`}
-              className="shrink-0 whitespace-nowrap rounded-full bg-card px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              {c.name}
-            </a>
-          ))}
+      {/* ── Sticky sidebar + scrolling content ───────────────────────────── */}
+      <section id="categories" className="mx-auto max-w-7xl px-6 py-16">
+        <div className="flex gap-10">
+
+          {/* Sticky sidebar — desktop only */}
+          <aside className="hidden lg:block w-56 shrink-0">
+            <nav className="sticky top-24 space-y-0.5">
+              <p className="mb-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                Categories
+              </p>
+              {categories.map((c) => {
+                const isActive = activeCategory === c.id;
+                return (
+                  <a
+                    key={c.id}
+                    href={`#${c.id}`}
+                    onClick={(e) => handleSidebarClick(e, c.id)}
+                    className="group flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm transition-all duration-200"
+                    style={{
+                      background: isActive
+                        ? "hsl(var(--primary) / 0.12)"
+                        : "transparent",
+                      color: isActive
+                        ? "hsl(var(--primary))"
+                        : "hsl(var(--muted-foreground))",
+                      fontWeight: isActive ? 600 : 400,
+                    }}
+                  >
+                    {/* Active indicator bar */}
+                    <span
+                      className="h-4 w-0.5 rounded-full transition-all duration-200"
+                      style={{
+                        background: isActive
+                          ? "hsl(var(--primary))"
+                          : "transparent",
+                        opacity: isActive ? 1 : 0,
+                      }}
+                    />
+                    {c.name}
+                  </a>
+                );
+              })}
+            </nav>
+          </aside>
+
+          {/* Scrollable content */}
+          <div className="min-w-0 flex-1 space-y-20">
+            {categories.map((cat) => (
+              <CategorySection key={cat.id} cat={cat} />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="mx-auto max-w-7xl space-y-16 px-6 py-16">
-        {categories.map((cat) => (
-          <div key={cat.id} id={cat.id} className="scroll-mt-24">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{cat.name}</h2>
-            <p className="mt-2 text-muted-foreground">{cat.subtitle}</p>
-            <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {cat.items.map((it) => (
-                <div
-                  key={it.name}
-                  className="group flex items-start gap-4 rounded-2xl bg-card p-6 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10"
-                >
-                  <LogoBadge item={it} />
-                  <div className="min-w-0">
-                    <h3 className="text-lg font-semibold">{it.name}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{it.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-
-      {/* CTA */}
+      {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-12">
         <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-card to-card p-10 text-center md:p-16">
           <h2 className="text-3xl font-bold md:text-5xl">
-            Don't see your stack?<br />
+            Don't see your stack?
+            <br />
             <span className="text-primary">We'll integrate it.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
-            Custom APIs, webhooks, internal tools — if it has an SDK or an endpoint, we've probably wired it up before. Tell us what you need.
+            Custom APIs, webhooks, internal tools — if it has an SDK or an
+            endpoint, we've probably wired it up before. Tell us what you need.
           </p>
-          <Link to="/contact" className="mt-8 inline-block rounded-xl bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground">
+          <Link
+            to="/contact"
+            className="mt-8 inline-block rounded-xl bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground"
+          >
             Talk to an engineer
           </Link>
         </div>
