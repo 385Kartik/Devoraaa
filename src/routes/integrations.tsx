@@ -373,10 +373,10 @@ function IntegrationsPage() {
                     className="group flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm transition-all duration-200"
                     style={{
                       background: isActive
-                        ? "hsl(var(--primary) / 0.12)"
+                        ? "rgba(249, 115, 22, 0.12)"
                         : "transparent",
                       color: isActive
-                        ? "hsl(var(--primary))"
+                        ? "#f97316"
                         : "hsl(var(--muted-foreground))",
                       fontWeight: isActive ? 600 : 400,
                     }}
@@ -385,9 +385,7 @@ function IntegrationsPage() {
                     <span
                       className="h-4 w-0.5 rounded-full transition-all duration-200"
                       style={{
-                        background: isActive
-                          ? "hsl(var(--primary))"
-                          : "transparent",
+                        background: isActive ? "#f97316" : "transparent",
                         opacity: isActive ? 1 : 0,
                       }}
                     />
