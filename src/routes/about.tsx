@@ -155,13 +155,25 @@ function AboutPage() {
         </h2>
 
         <h3 className="mt-10 text-lg font-semibold">Industries We Serve</h3>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {industries.map((i) => (
-            <span key={i} className="rounded-full border border-border bg-card px-4 py-1.5 text-sm">
-              {i}
-            </span>
-          ))}
+        <div
+          className="group/marquee relative mt-4 overflow-hidden"
+          style={{
+            maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          }}
+        >
+          <div className="flex w-max gap-3 animate-[marquee_40s_linear_infinite] group-hover/marquee:[animation-play-state:paused]">
+            {[...industries, ...industries].map((i, idx) => (
+              <span
+                key={`${i}-${idx}`}
+                className="shrink-0 rounded-full border border-[hsl(24_95%_53%)]/40 bg-card px-5 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-[hsl(24_95%_53%)] hover:bg-[hsl(24_95%_53%)]/10 hover:text-[hsl(24_95%_53%)] hover:shadow-[0_0_20px_-4px_hsl(24_95%_53%/0.6)]"
+              >
+                {i}
+              </span>
+            ))}
+          </div>
         </div>
+
 
         <div className="mt-10 space-y-4 text-muted-foreground">
           <p>
