@@ -266,17 +266,64 @@ function DifferentFlow() {
         })}
       </div>
 
-      {/* ── MOBILE — vertical zigzag (left-right alternating) ── */}
+      {/* ── MOBILE — curvy dotted SVG path connecting all 6 diamonds ── */}
       <div className="md:hidden mt-10 relative px-6">
-        {/* Vertical dotted connector line */}
-        <div
+        {/*
+          SVG viewBox 320 × 518:
+          Each row slot = 53px diamond + 40px gap = 93px.
+          Diamond centre y per row: 26.5, 119.5, 212.5, 305.5, 398.5, 491.5
+          Left diamond x = 26 (even rows), Right diamond x = 294 (odd rows).
+          Cubic-bezier control points sit at the midpoint-y of each adjacent pair,
+          pulled horizontally to the same side — creates a smooth S-curve.
+        */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 320 518"
+          preserveAspectRatio="none"
           aria-hidden="true"
-          className="absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2"
-          style={{
-            background:
-              "repeating-linear-gradient(to bottom, hsl(var(--primary)/0.4) 0px, hsl(var(--primary)/0.4) 6px, transparent 6px, transparent 14px)",
-          }}
-        />
+        >
+          {/* faint ghost track — full route always visible */}
+          <path
+            d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity={0.12}
+            strokeWidth={2.5}
+            strokeDasharray="8 7"
+            className="text-primary"
+          />
+
+          {/* animated draw-on path */}
+          <motion.path
+            d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeDasharray="8 7"
+            strokeLinecap="round"
+            className="text-primary"
+            style={{ strokeOpacity: 0.6 }}
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* glowing pulse dot that travels the path */}
+          <motion.circle
+            r={4}
+            fill="currentColor"
+            className="text-primary"
+            fillOpacity={0.9}
+            initial={{ offsetDistance: "0%", opacity: 0 }}
+            whileInView={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+            style={{
+              offsetPath: `path("M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5")`,
+            } as React.CSSProperties}
+          />
+        </svg>
 
         <div className="relative flex flex-col gap-10">
           {different.map((step, i) => {
