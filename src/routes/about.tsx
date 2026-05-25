@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useRef, useCallback } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { motion } from "framer-motion";
 import {
@@ -340,6 +341,88 @@ function DifferentFlow() {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─── TiltCard — inline 3-D tilt + comet shimmer, no external import ──────────
+function TiltCard({
+  children,
+  rotateDepth = 17.5,
+  translateDepth = 20,
+  className = "",
+  style,
+}: {
+  children: React.ReactNode;
+  rotateDepth?: number;
+  translateDepth?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
+  const shimmerRef = useRef<HTMLDivElement>(null);
+
+  const onMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      rafId.current = requestAnimationFrame(() => {
+        const el = ref.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width  / 2;
+        const cy = rect.height / 2;
+        const rotX =  ((y - cy) / cy) * -rotateDepth;
+        const rotY =  ((x - cx) / cx) *  rotateDepth;
+        el.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(${translateDepth}px)`;
+
+        // move shimmer highlight to follow cursor
+        const shimmer = shimmerRef.current;
+        if (shimmer) {
+          const px = (x / rect.width)  * 100;
+          const py = (y / rect.height) * 100;
+          shimmer.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 45%, transparent 70%)`;
+          shimmer.style.opacity = "1";
+        }
+      });
+    },
+    [rotateDepth, translateDepth]
+  );
+
+  const onMouseLeave = useCallback(() => {
+    if (rafId.current) cancelAnimationFrame(rafId.current);
+    const el = ref.current;
+    if (el) el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+    const shimmer = shimmerRef.current;
+    if (shimmer) shimmer.style.opacity = "0";
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{ transformStyle: "preserve-3d", transition: "transform 0.35s cubic-bezier(0.03,0.98,0.52,0.99)", willChange: "transform", ...style }}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+    >
+      {/* comet shimmer overlay */}
+      <div
+        ref={shimmerRef}
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: "inherit",
+          opacity: 0,
+          pointerEvents: "none",
+          zIndex: 10,
+          transition: "opacity 0.25s ease",
+        }}
+      />
+      {children}
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function AboutPage() {
   return (
     <SiteLayout>
@@ -523,9 +606,10 @@ function AboutPage() {
             whileInView="show"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="overflow-hidden rounded-3xl bg-card"
           >
-            <img src={nayanImg} alt="Nayan Sachani — Co-founder, Devora" className="h-full w-full object-cover" />
+            <TiltCard className="relative overflow-hidden rounded-3xl bg-card">
+              <img src={nayanImg} alt="Nayan Sachani — Co-founder, Devora" className="h-full w-full object-cover" />
+            </TiltCard>
           </motion.div>
           <div>
             <h3 className="text-2xl font-bold">Nayan Sachani <span className="text-primary">(Co-founder & Head of Client Experience)</span></h3>
@@ -569,10 +653,13 @@ function AboutPage() {
               whileInView="show"
               viewport={{ once: true }}
               variants={fadeUp}
-              className="overflow-hidden rounded-3xl bg-card"
-              style={{ clipPath: "inset(0 0 20% 0 round 1.5rem)" }}
             >
-              <img src={kartikImg} alt="Kartik Parmar — Co-founder & CTO, Devora" className="h-full w-full object-cover object-top" />
+              <TiltCard
+                className="relative overflow-hidden rounded-3xl bg-card"
+                style={{ clipPath: "inset(0 0 20% 0 round 1.5rem)" }}
+              >
+                <img src={kartikImg} alt="Kartik Parmar — Co-founder & CTO, Devora" className="h-full w-full object-cover object-top" />
+              </TiltCard>
             </motion.div>
           </div>
           <div className="md:order-1">
