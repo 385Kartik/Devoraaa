@@ -178,7 +178,7 @@ function HeroSparkles() {
   );
 }
 
-// ─── GlobeCanvas — 3-D interactive globe, cursor-driven tilt ─────────────────
+// ─── GlobeCanvas ─────────────────────────────────────────────────────────────
 function GlobeCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -408,7 +408,7 @@ function GlobeCanvas() {
   return <canvas ref={canvasRef} aria-hidden="true" className="h-full w-full" />;
 }
 
-// ─── ProcessFlow — zigzag diamonds connected by animated wavy dotted path ────
+// ─── ProcessFlow ──────────────────────────────────────────────────────────────
 function ProcessFlow() {
   const VBW = 1200;
   const VBH = 360;
@@ -562,8 +562,8 @@ function ProcessFlow() {
         })}
       </div>
 
-      {/* ── MOBILE — vertical zigzag ── */}
-      <div className="md:hidden mt-10 relative px-6">
+      {/* ── MOBILE ── */}
+      <div className="md:hidden mt-10 relative px-4">
         <div
           aria-hidden="true"
           className="absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2"
@@ -637,7 +637,6 @@ function TestimonialMarquee() {
   const [paused, setPaused] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  // Triple the array so there's always content filling the track at any screen width
   const repeated = [...testimonials, ...testimonials, ...testimonials];
 
   return (
@@ -721,7 +720,7 @@ function HomePage() {
 
   return (
     <SiteLayout>
-      {/* HERO */}
+      {/* HERO — full bleed, no max-width cap */}
       <section ref={heroRef} className="relative overflow-hidden">
         <HeroSparkles />
         <motion.div style={{ scale: glowScale }}
@@ -737,8 +736,9 @@ function HomePage() {
           <div className="absolute inset-1/4 rounded-full bg-primary/10 blur-3xl" />
         </motion.div>
 
+        {/* ↓ removed mx-auto max-w-7xl; hero card now stretches with edge padding only */}
         <motion.div style={{ y: heroY, opacity: heroOpacity }}
-          className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-16 text-center">
+          className="relative z-10 w-full px-4 sm:px-6 lg:px-10 pt-24 pb-16 text-center">
           <motion.div initial="hidden" animate="show" variants={stagger}
             className="rounded-3xl bg-card/40 px-6 py-16 backdrop-blur-sm md:px-12 md:py-24">
             <motion.h1 variants={fadeUp}
@@ -772,7 +772,7 @@ function HomePage() {
         </motion.div>
       </section>
 
-      {/* CLIENT MARQUEE */}
+      {/* CLIENT MARQUEE — already full-bleed, unchanged */}
       <section className="mt-8 overflow-hidden border-y border-border/40 bg-card/30 py-10">
         <p className="mb-6 text-center text-xs uppercase tracking-[0.3em] text-muted-foreground">
           Certified & Recognized
@@ -789,8 +789,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      {/* SERVICES — full width with only edge padding */}
+      <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={stagger}>
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Services</motion.p>
           <motion.h2 variants={fadeUp} className="mt-2 text-center text-4xl font-bold md:text-5xl">What We Do</motion.h2>
@@ -818,8 +818,8 @@ function HomePage() {
         </motion.div>
       </section>
 
-      {/* PROCESS */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      {/* PROCESS — full width with only edge padding */}
+      <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Our Process</motion.p>
           <motion.h2 variants={fadeUp} className="mt-2 text-center text-4xl font-bold md:text-5xl">How We Work</motion.h2>
@@ -827,8 +827,8 @@ function HomePage() {
         <ProcessFlow />
       </section>
 
-      {/* PROJECTS */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      {/* PROJECTS — full width with only edge padding */}
+      <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Our Work</motion.p>
           <motion.h2 variants={fadeUp} className="mt-2 text-center text-4xl font-bold md:text-5xl">Real Products We've Built</motion.h2>
@@ -858,8 +858,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      {/* TESTIMONIALS — full width with only edge padding */}
+      <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -893,14 +893,13 @@ function HomePage() {
           />
         </motion.div>
 
-        {/* Marquee replaces old 3-column grid */}
         <div className="relative z-20 mt-0">
           <TestimonialMarquee />
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="mx-auto mt-28 max-w-5xl px-6 pb-28">
+      {/* CTA — full width with only edge padding */}
+      <section className="mt-28 w-full px-4 sm:px-6 lg:px-10 pb-28">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }} transition={{ duration: 0.6 }}
           className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/70 p-12 text-center text-primary-foreground">
