@@ -303,7 +303,7 @@ function IntegrationsPage() {
   return (
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="mx-auto mt-6 max-w-7xl px-6">
+      <section className="mx-auto mt-6 max-w-[1400px] px-6 md:px-10">
         <div className="rounded-3xl bg-card/60 px-6 py-20 text-center md:py-28">
           <span className="inline-block rounded-full bg-background px-5 py-2 text-sm font-medium text-foreground/90">
             42+ Integrations
@@ -354,7 +354,7 @@ function IntegrationsPage() {
       </section>
 
       {/* ── Sticky sidebar + scrolling content ───────────────────────────── */}
-      <section id="categories" className="mx-auto max-w-7xl px-6 py-16">
+      <section id="categories" className="mx-auto max-w-[1400px] px-6 md:px-10 py-16">
         <div className="flex gap-10">
 
           {/* Sticky sidebar — desktop only */}
@@ -406,7 +406,7 @@ function IntegrationsPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-6 pb-12">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pb-12">
         <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-card to-card p-10 text-center md:p-16">
           <h2 className="text-3xl font-bold md:text-5xl">
             Don't see your stack?

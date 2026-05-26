@@ -474,7 +474,7 @@ function AboutPage() {
   return (
     <SiteLayout>
       {/* HERO */}
-      <section className="mx-auto max-w-6xl px-6 pt-20 text-center">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center">
         <motion.h1
           initial="hidden"
           animate="show"
@@ -507,7 +507,7 @@ function AboutPage() {
       </section>
 
       {/* STATS */}
-      <section className="mx-auto mt-20 max-w-7xl px-6">
+      <section className="mx-auto mt-20 max-w-[1400px] px-6 md:px-10">
         <div className="grid gap-4 rounded-3xl bg-card p-8 sm:grid-cols-2 md:grid-cols-5">
           {stats.map((s) => (
             <motion.div
@@ -529,7 +529,7 @@ function AboutPage() {
       </section>
 
       {/* WHO WE ARE */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Who We Are</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">
           A tech partner that turns complex ideas into simple, scalable solutions.
@@ -571,7 +571,7 @@ function AboutPage() {
       </section>
 
       {/* WHY CLIENTS CHOOSE */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Why Choose Us</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">Why Clients Choose Devora</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
@@ -594,7 +594,7 @@ function AboutPage() {
       </section>
 
       {/* WHAT MAKES DEVORA DIFFERENT — now with DifferentFlow animation */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Why Devora</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">What Makes Devora Different</h2>
         <p className="mt-4 max-w-2xl text-muted-foreground">
@@ -604,7 +604,7 @@ function AboutPage() {
       </section>
 
       {/* MISSION & VISION */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Purpose</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">Mission & Vision</h2>
         <p className="mt-4 max-w-3xl text-muted-foreground">
@@ -639,7 +639,7 @@ function AboutPage() {
       </section>
 
       {/* TEAM */}
-      <section className="mx-auto mt-28 max-w-7xl px-6">
+      <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Team</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">The Minds Behind Devora</h2>
         <p className="mt-4 max-w-3xl text-muted-foreground">
