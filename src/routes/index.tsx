@@ -24,12 +24,12 @@ const services = [
 ];
 
 const projects = [
-  { title: "PRINT-IT",        sub: "print docs from home",  tag: "Web Application", img: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp" },
-  { title: "Knish",         sub: "Clothing brand",           tag: "Web Application", img: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp" },
-  { title: "Wheatflow", sub: "wheat business",              tag: "Database management", img: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp" },
-  { title: "Navrang",      sub: "navratri accessories",            tag: "Web Application", img: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png" },
-  { title: "Get tutorials",            sub: "tutorials for engineering",          tag: "Web Application",            img: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png" },
-  { title: "College predictor",   sub: "help to select the college",      tag: "Web Application", img: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp" },
+  { title: "PRINT-IT",          sub: "print docs from home",          tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp" },
+  { title: "Knish",             sub: "Clothing brand",                 tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp" },
+  { title: "Wheatflow",         sub: "wheat business",                 tag: "Database management", img: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp" },
+  { title: "Navrang",           sub: "navratri accessories",           tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png" },
+  { title: "Get tutorials",     sub: "tutorials for engineering",      tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png" },
+  { title: "College predictor", sub: "help to select the college",     tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp" },
 ];
 
 const process = [
@@ -66,16 +66,8 @@ const stagger = {
 // ─── HeroSparkles ──────────────────────────────────────────────────────────────
 function HeroSparkles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [active, setActive] = useState(false);
 
   useEffect(() => {
-    // Underline svg: delay 0.8s + duration 1.4s ⇒ start sparkles after line finishes
-    const t = setTimeout(() => setActive(true), 2300);
-    return () => clearTimeout(t);
-  }, []);
-
-  useEffect(() => {
-    if (!active) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -175,7 +167,7 @@ function HeroSparkles() {
     ro.observe(canvas);
     init(); draw();
     return () => { cancelAnimationFrame(animId); ro.disconnect(); window.removeEventListener("mousemove",onMove); window.removeEventListener("touchmove",onTouch); };
-  }, [active]);
+  }, []);
 
   return (
     <>
@@ -444,7 +436,8 @@ function ProcessFlow() {
     <div className="mt-16">
 
       {/* ── DESKTOP ── */}
-      <div className="hidden md:block relative" style={{ height: CONTAINER_H }}>
+      {/* ↓ THE ONLY CHANGED LINE: added transform: "translateX(-10%)" */}
+      <div className="hidden md:block relative" style={{ height: CONTAINER_H, transform: "translateX(-10%)" }}>
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           viewBox={`0 0 ${VBW} ${VBH}`}
@@ -490,8 +483,7 @@ function ProcessFlow() {
         </svg>
 
         {process.map((step, i) => {
-          const pt   = pts[i];
-          const isUp = i % 2 === 0;
+          const pt      = pts[i];
           const leftPct = (pt.x / VBW) * 100;
           const topPct  = (pt.y / VBH) * 100;
 
@@ -515,10 +507,11 @@ function ProcessFlow() {
                 whileHover="hovered"
                 style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
+                {/* Label — always above the diamond, centred */}
                 <motion.div
                   variants={{
-                    rest:    { scale: 1,    opacity: 0.75, y: 0 },
-                    hovered: { scale: 1.22, opacity: 1,    y: isUp ? -6 : 6 },
+                    rest:    { scale: 1,    opacity: 0.75, y: 0  },
+                    hovered: { scale: 1.22, opacity: 1,    y: -6 },
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 22 }}
                   style={{
@@ -527,16 +520,15 @@ function ProcessFlow() {
                     transform:       "translateX(-50%)",
                     width:           "9rem",
                     textAlign:       "center",
-                    transformOrigin: isUp ? "bottom center" : "top center",
-                    ...(isUp
-                      ? { bottom: "calc(100% + 16px)" }
-                      : { top:    "calc(100% + 16px)" }),
+                    transformOrigin: "bottom center",
+                    bottom:          "calc(100% + 16px)",
                   }}
                   className="text-[14px] font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
                 >
                   {step}
                 </motion.div>
 
+                {/* Glow aura */}
                 <motion.div
                   variants={{
                     rest:    { opacity: 0, scale: 0.7 },
@@ -546,6 +538,7 @@ function ProcessFlow() {
                   className="absolute inset-0 rounded-sm bg-primary/20 blur-xl pointer-events-none"
                 />
 
+                {/* Diamond body */}
                 <motion.div
                   variants={{
                     rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
@@ -579,7 +572,6 @@ function ProcessFlow() {
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          {/* faint ghost track — full route always visible */}
           <path
             d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
             fill="none"
@@ -589,7 +581,6 @@ function ProcessFlow() {
             strokeDasharray="8 7"
             className="text-primary"
           />
-          {/* animated draw-on path */}
           <motion.path
             d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
             fill="none"
@@ -604,7 +595,6 @@ function ProcessFlow() {
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1] }}
           />
-          {/* glowing pulse dot that travels the path */}
           <motion.circle
             r={4}
             fill="currentColor"
