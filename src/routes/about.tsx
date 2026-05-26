@@ -14,8 +14,9 @@ import {
   Building2,
   Linkedin,
 } from "lucide-react";
-import nayanImg from "@/assets/nayan.png";
-import kartikImg from "@/assets/kartik.png";
+import { images } from "@/assets/images";
+const nayanImg = images.nayan;
+const kartikImg = images.kartik;
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
