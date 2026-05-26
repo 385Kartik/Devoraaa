@@ -434,6 +434,7 @@ function ProcessFlow() {
 
   return (
     <div className="mt-16">
+
       {/* ── DESKTOP ── */}
       <div className="hidden md:block relative" style={{ height: CONTAINER_H }}>
         <svg
@@ -563,15 +564,53 @@ function ProcessFlow() {
       </div>
 
       {/* ── MOBILE ── */}
-      <div className="md:hidden mt-10 relative px-4">
-        <div
+      <div className="md:hidden mt-10 relative px-6">
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 320 518"
+          preserveAspectRatio="none"
           aria-hidden="true"
-          className="absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2"
-          style={{
-            background:
-              "repeating-linear-gradient(to bottom, hsl(var(--primary)/0.4) 0px, hsl(var(--primary)/0.4) 6px, transparent 6px, transparent 14px)",
-          }}
-        />
+        >
+          {/* faint ghost track — full route always visible */}
+          <path
+            d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity={0.12}
+            strokeWidth={2.5}
+            strokeDasharray="8 7"
+            className="text-primary"
+          />
+          {/* animated draw-on path */}
+          <motion.path
+            d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeDasharray="8 7"
+            strokeLinecap="round"
+            className="text-primary"
+            style={{ strokeOpacity: 0.6 }}
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1] }}
+          />
+          {/* glowing pulse dot that travels the path */}
+          <motion.circle
+            r={4}
+            fill="currentColor"
+            className="text-primary"
+            fillOpacity={0.9}
+            initial={{ offsetDistance: "0%", opacity: 0 }}
+            whileInView={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+            style={{
+              offsetPath: `path("M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5")`,
+            } as React.CSSProperties}
+          />
+        </svg>
 
         <div className="relative flex flex-col gap-10">
           {process.map((step, i) => {
@@ -628,6 +667,7 @@ function ProcessFlow() {
           })}
         </div>
       </div>
+
     </div>
   );
 }
@@ -720,7 +760,7 @@ function HomePage() {
 
   return (
     <SiteLayout>
-      {/* HERO — full bleed, no max-width cap */}
+      {/* HERO */}
       <section ref={heroRef} className="relative overflow-hidden">
         <HeroSparkles />
         <motion.div style={{ scale: glowScale }}
@@ -736,7 +776,6 @@ function HomePage() {
           <div className="absolute inset-1/4 rounded-full bg-primary/10 blur-3xl" />
         </motion.div>
 
-        {/* ↓ removed mx-auto max-w-7xl; hero card now stretches with edge padding only */}
         <motion.div style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 w-full px-4 sm:px-6 lg:px-10 pt-24 pb-16 text-center">
           <motion.div initial="hidden" animate="show" variants={stagger}
@@ -772,7 +811,7 @@ function HomePage() {
         </motion.div>
       </section>
 
-      {/* CLIENT MARQUEE — already full-bleed, unchanged */}
+      {/* CLIENT MARQUEE */}
       <section className="mt-8 overflow-hidden border-y border-border/40 bg-card/30 py-10">
         <p className="mb-6 text-center text-xs uppercase tracking-[0.3em] text-muted-foreground">
           Certified & Recognized
@@ -789,7 +828,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES — full width with only edge padding */}
+      {/* SERVICES */}
       <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={stagger}>
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Services</motion.p>
@@ -818,7 +857,7 @@ function HomePage() {
         </motion.div>
       </section>
 
-      {/* PROCESS — full width with only edge padding */}
+      {/* PROCESS */}
       <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Our Process</motion.p>
@@ -827,7 +866,7 @@ function HomePage() {
         <ProcessFlow />
       </section>
 
-      {/* PROJECTS — full width with only edge padding */}
+      {/* PROJECTS */}
       <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Our Work</motion.p>
@@ -858,7 +897,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS — full width with only edge padding */}
+      {/* TESTIMONIALS */}
       <section className="mt-28 w-full px-4 sm:px-6 lg:px-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -898,7 +937,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CTA — full width with only edge padding */}
+      {/* CTA */}
       <section className="mt-28 w-full px-4 sm:px-6 lg:px-10 pb-28">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }} transition={{ duration: 0.6 }}
