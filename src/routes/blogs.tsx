@@ -24,13 +24,13 @@ const posts = [
 function BlogsPage() {
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-5xl px-6 pt-20 text-center">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center">
         <p className="text-sm uppercase tracking-widest text-primary">Blogs</p>
         <h1 className="mt-3 text-5xl font-bold md:text-6xl">Insights from the Devora team</h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">Engineering deep-dives, product lessons, and stories from the projects we ship.</p>
       </section>
 
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <section className="mx-auto mt-16 max-w-[1400px] px-6 md:px-10">
         <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((p) => (
             <article key={p.title} className="group flex flex-col overflow-hidden rounded-2xl bg-card transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">

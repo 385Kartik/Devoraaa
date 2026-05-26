@@ -45,7 +45,7 @@ function CaseStudyPage() {
 
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-7xl px-6 pt-20 text-center">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center">
         <h1 className="text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl">
           Stories of Innovation &<br />Growth
         </h1>
@@ -68,7 +68,7 @@ function CaseStudyPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 py-16">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((s) => (
             <article key={s.slug} className="group flex flex-col overflow-hidden rounded-2xl bg-card p-5 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
