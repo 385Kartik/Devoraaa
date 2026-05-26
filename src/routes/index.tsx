@@ -175,7 +175,7 @@ function HeroSparkles() {
     ro.observe(canvas);
     init(); draw();
     return () => { cancelAnimationFrame(animId); ro.disconnect(); window.removeEventListener("mousemove",onMove); window.removeEventListener("touchmove",onTouch); };
-  }, []);
+  }, [active]);
 
   return (
     <>
