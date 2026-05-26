@@ -66,8 +66,16 @@ const stagger = {
 // ─── HeroSparkles ──────────────────────────────────────────────────────────────
 function HeroSparkles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
+    // Underline svg: delay 0.8s + duration 1.4s ⇒ start sparkles after line finishes
+    const t = setTimeout(() => setActive(true), 2300);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!active) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
