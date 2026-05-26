@@ -24,13 +24,13 @@ const services = [
 function ServicesPage() {
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-5xl px-6 pt-20 text-center">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center">
         <p className="text-sm uppercase tracking-widest text-primary">Services</p>
         <h1 className="mt-3 text-5xl font-bold md:text-6xl">What We Do</h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">End-to-end digital solutions that launch, scale, and transform your business.</p>
       </section>
 
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <section className="mx-auto mt-16 max-w-[1400px] px-6 md:px-10">
         <div className="grid gap-6 md:grid-cols-2">
           {services.map((s) => (
             <div key={s.title} className="group rounded-2xl bg-card p-8 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">

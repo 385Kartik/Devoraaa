@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, Instagram, Linkedin, Mail, MessageCircle } from "lucide-react";
+import { Phone, Instagram, Linkedin, Mail, MessageCircle, Menu } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -31,10 +33,13 @@ const linkedinLinks = [
 ];
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="w-full bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-sm">
+      <div className="sticky top-0 z-50 w-full bg-primary text-primary-foreground">
+
+        <div className="flex w-full items-center justify-between px-4 py-2 text-sm md:px-8">
           <a href="tel:+919321633746" className="flex items-center gap-2 font-medium">
             <Phone className="h-4 w-4" /> +91 9321633746
           </a>
@@ -79,8 +84,9 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <header className="mx-auto mt-6 w-full max-w-7xl px-6">
-        <div className="flex items-center justify-between rounded-2xl bg-card/60 px-6 py-4 backdrop-blur">
+      <header className="sticky top-[40px] z-40 mx-auto mt-6 w-full max-w-7xl px-6">
+        <div className="flex items-center justify-between rounded-2xl bg-card/80 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm">
+
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground">D</div>
             <span className="text-xl font-semibold tracking-tight">Devora</span>
@@ -101,8 +107,65 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
           <Link to="/contact" className="hidden rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground md:inline-block">
             Book a Call
           </Link>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open menu"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-foreground md:hidden"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
         </div>
       </header>
+
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden"
+            />
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed right-0 top-0 z-50 h-full w-2/3 max-w-xs border-l border-border bg-card p-6 shadow-2xl md:hidden"
+            >
+              <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground">D</div>
+                <span className="text-lg font-semibold">Devora</span>
+              </Link>
+              <nav className="mt-8 flex flex-col gap-4">
+                {navItems.map((n) => (
+                  <Link
+                    key={n.to}
+                    to={n.to}
+                    onClick={() => setOpen(false)}
+                    className="text-base text-foreground/80 transition-colors hover:text-primary"
+                    activeProps={{ className: "text-base text-primary" }}
+                    activeOptions={{ exact: true }}
+                  >
+                    {n.label}
+                  </Link>
+                ))}
+                <Link
+                  to="/contact"
+                  onClick={() => setOpen(false)}
+                  className="mt-4 inline-flex w-fit rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground"
+                >
+                  Book a Call
+                </Link>
+              </nav>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
 
       <main className="flex-1">{children}</main>
 
