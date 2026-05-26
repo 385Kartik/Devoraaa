@@ -37,7 +37,8 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="w-full bg-primary text-primary-foreground">
+      <div className="sticky top-0 z-50 w-full bg-primary text-primary-foreground">
+
         <div className="flex w-full items-center justify-between px-4 py-2 text-sm md:px-8">
           <a href="tel:+919321633746" className="flex items-center gap-2 font-medium">
             <Phone className="h-4 w-4" /> +91 9321633746
@@ -83,8 +84,9 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <header className="mx-auto mt-6 w-full max-w-7xl px-6">
-        <div className="flex items-center justify-between rounded-2xl bg-card/60 px-6 py-4 backdrop-blur">
+      <header className="sticky top-[40px] z-40 mx-auto mt-6 w-full max-w-7xl px-6">
+        <div className="flex items-center justify-between rounded-2xl bg-card/80 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm">
+
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground">D</div>
             <span className="text-xl font-semibold tracking-tight">Devora</span>
@@ -128,11 +130,11 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
               className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden"
             />
             <motion.aside
-              initial={{ x: "-100%" }}
+              initial={{ x: "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
+              exit={{ x: "100%" }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed left-0 top-0 z-50 h-full w-1/2 border-r border-border bg-card p-6 shadow-2xl md:hidden"
+              className="fixed right-0 top-0 z-50 h-full w-2/3 max-w-xs border-l border-border bg-card p-6 shadow-2xl md:hidden"
             >
               <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground">D</div>
