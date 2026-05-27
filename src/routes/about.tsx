@@ -122,7 +122,7 @@ function DifferentFlow() {
     <div className="mt-16">
 
       {/* ── DESKTOP ── */}
-      <div className="hidden md:block relative" style={{ height: CONTAINER_H }}>
+      <div className="hidden md:block relative px-20 lg:px-28" style={{ height: CONTAINER_H }}>
 
         {/* SVG path overlay */}
         <svg
@@ -218,7 +218,7 @@ function DifferentFlow() {
                     position:        "absolute",
                     left:            "50%",
                     transform:       "translateX(-50%)",
-                    width:           "10rem",
+                    width:           "11rem",
                     textAlign:       "center",
                     transformOrigin: isUp ? "bottom center" : "top center",
                     ...(isUp

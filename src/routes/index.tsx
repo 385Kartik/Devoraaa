@@ -438,8 +438,7 @@ function ProcessFlow() {
     <div className="mt-16">
 
       {/* ── DESKTOP ── */}
-      {/* ↓ THE ONLY CHANGED LINE: added transform: "translateX(-10%)" */}
-      <div className="hidden md:block relative" style={{ height: CONTAINER_H, transform: "translateX(-10%)" }}>
+      <div className="hidden md:block relative px-20 lg:px-28" style={{ height: CONTAINER_H }}>
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           viewBox={`0 0 ${VBW} ${VBH}`}
@@ -520,7 +519,7 @@ function ProcessFlow() {
                     position:        "absolute",
                     left:            "50%",
                     transform:       "translateX(-50%)",
-                    width:           "9rem",
+                    width:           "11rem",
                     textAlign:       "center",
                     transformOrigin: "bottom center",
                     bottom:          "calc(100% + 16px)",
