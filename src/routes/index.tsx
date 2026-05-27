@@ -23,13 +23,15 @@ const services = [
   { icon: Monitor,    title: "Desktop App Development",    desc: "Reliable desktop apps for productivity tools, dashboards, and enterprise systems." },
 ];
 
+import { images } from "@/assets/images";
+
 const projects = [
-  { title: "PRINT-IT",          sub: "print docs from home",          tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp" },
-  { title: "Knish",             sub: "Clothing brand",                 tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp" },
-  { title: "Wheatflow",         sub: "wheat business",                 tag: "Database management", img: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp" },
-  { title: "Navrang",           sub: "navratri accessories",           tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png" },
-  { title: "Get tutorials",     sub: "tutorials for engineering",      tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png" },
-  { title: "College predictor", sub: "help to select the college",     tag: "Web Application",     img: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp" },
+  { title: "PRINT-IT",          sub: "print docs from home",          tag: "Web Application",     img: images.sovPortal },
+  { title: "Knish",             sub: "Clothing brand",                 tag: "Web Application",     img: images.wiseTalk },
+  { title: "Wheatflow",         sub: "wheat business",                 tag: "Database management", img: images.csWeb },
+  { title: "Navrang",           sub: "navratri accessories",           tag: "Web Application",     img: images.brandMonkey },
+  { title: "Get tutorials",     sub: "tutorials for engineering",      tag: "Web Application",     img: images.qrynto },
+  { title: "College predictor", sub: "help to select the college",     tag: "Web Application",     img: images.car360 },
 ];
 
 const process = [

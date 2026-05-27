@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { images } from "@/assets/images";
 
 export const Route = createFileRoute("/case-study")({
   component: CaseStudyPage,
@@ -24,19 +25,19 @@ interface CaseStudy {
 }
 
 const studies: CaseStudy[] = [
-  { title: "Sov Portal", subtitle: "Edtech Portal For Students & Agents", image: "https://cms.slashifytech.in/uploads/sov_portal_c665c87259_7be99a388d.webp", category: "Web App", slug: "sov-portal" },
-  { title: "Wise Talk", subtitle: "Career Guidance Mobile Application", image: "https://cms.slashifytech.in/uploads/wise_talk_9af024187b_96cc461eda.webp", category: "Mobile App", slug: "wise-talk" },
-  { title: "Connecting Soulmate", subtitle: "Matrimony Application", image: "https://cms.slashifytech.in/uploads/CS_a23bff7541_be56109500.webp", category: "Web App", slug: "connecting-soulmate" },
-  { title: "Brand Monkey", subtitle: "Employee Management System", image: "https://cms.slashifytech.in/uploads/BM_Banner_968928d689.png", category: "Web App", slug: "brand-monkey" },
-  { title: "Connecting Soulmate", subtitle: "Matrimony Mobile Application", image: "https://cms.slashifytech.in/uploads/CS_Mob_2859d898d7_425e6496b4.webp", category: "Mobile App", slug: "connecting-soulmate-mobile" },
-  { title: "MG Portal", subtitle: "Raam Group", image: "https://cms.slashifytech.in/uploads/MG_d0da169860_969f23e0a8.webp", category: "Web App", slug: "mg-portal" },
-  { title: "360 Car Protect", subtitle: "Automotive & Warranty Management", image: "https://cms.slashifytech.in/uploads/360_2ed4e74e2a_a2b6bf46bf.webp", category: "Web App", slug: "360-car-protect" },
-  { title: "Online Filing India", subtitle: "Legal, Compliance & Business Services", image: "https://cms.slashifytech.in/uploads/online_filing_d1135c8254_43b90bb663.jpg", category: "Web App", slug: "online-filing-india" },
-  { title: "IDSSPL", subtitle: "Financial Technology & Reconciliation Systems", image: "https://cms.slashifytech.in/uploads/IDSSPL_Card_Banner_4856563ee0.png", category: "Web App", slug: "idsspl-fintech" },
-  { title: "Memoria", subtitle: "Social Memory App", image: "https://cms.slashifytech.in/uploads/Memoria_Card_Banner_087ecc87ab.png", category: "Mobile App", slug: "memoria-app" },
-  { title: "Qrynto", subtitle: "Anti-Counterfeiting SaaS Platform", image: "https://cms.slashifytech.in/uploads/Qrynto_Banner_7ee07f5b89.png", category: "Web App", slug: "qrynto" },
-  { title: "Cricket Or Nothing", subtitle: "Real-Time Cricket Platform", image: "https://cms.slashifytech.in/uploads/CON_Banner_40e7c8bd75.jpg", category: "Web App", slug: "cricket-or-nothing" },
-  { title: "Shivorix Real Estate", subtitle: "Luxury Property Advisory", image: "https://cms.slashifytech.in/uploads/Shivorix_RE_banner_b39bbaf736.png", category: "Web App", slug: "shivorix-real-estate" },
+  { title: "Sov Portal", subtitle: "Edtech Portal For Students & Agents", image: images.sovPortal, category: "Web App", slug: "sov-portal" },
+  { title: "Wise Talk", subtitle: "Career Guidance Mobile Application", image: images.wiseTalk, category: "Mobile App", slug: "wise-talk" },
+  { title: "Connecting Soulmate", subtitle: "Matrimony Application", image: images.csWeb, category: "Web App", slug: "connecting-soulmate" },
+  { title: "Brand Monkey", subtitle: "Employee Management System", image: images.brandMonkey, category: "Web App", slug: "brand-monkey" },
+  { title: "Connecting Soulmate", subtitle: "Matrimony Mobile Application", image: images.csMobile, category: "Mobile App", slug: "connecting-soulmate-mobile" },
+  { title: "MG Portal", subtitle: "Raam Group", image: images.mgPortal, category: "Web App", slug: "mg-portal" },
+  { title: "360 Car Protect", subtitle: "Automotive & Warranty Management", image: images.car360, category: "Web App", slug: "360-car-protect" },
+  { title: "Online Filing India", subtitle: "Legal, Compliance & Business Services", image: images.onlineFiling, category: "Web App", slug: "online-filing-india" },
+  { title: "IDSSPL", subtitle: "Financial Technology & Reconciliation Systems", image: images.idsspl, category: "Web App", slug: "idsspl-fintech" },
+  { title: "Memoria", subtitle: "Social Memory App", image: images.memoria, category: "Mobile App", slug: "memoria-app" },
+  { title: "Qrynto", subtitle: "Anti-Counterfeiting SaaS Platform", image: images.qrynto, category: "Web App", slug: "qrynto" },
+  { title: "Cricket Or Nothing", subtitle: "Real-Time Cricket Platform", image: images.cricketOrNothing, category: "Web App", slug: "cricket-or-nothing" },
+  { title: "Shivorix Real Estate", subtitle: "Luxury Property Advisory", image: images.shivorix, category: "Web App", slug: "shivorix-real-estate" },
 ];
 
 function CaseStudyPage() {
