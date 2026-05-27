@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ArrowRight, Calendar } from "lucide-react";
+import { images } from "@/assets/images";
 
 export const Route = createFileRoute("/blogs")({
   component: BlogsPage,
@@ -13,12 +14,12 @@ export const Route = createFileRoute("/blogs")({
 });
 
 const posts = [
-  { title: "How to Choose the Right Tech Stack for Your SaaS in 2026", excerpt: "A pragmatic guide to picking a stack that scales without slowing your team down.", date: "May 18, 2026", category: "SaaS", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80" },
-  { title: "AI Voice Agents: The New Customer Support Backbone", excerpt: "What we learned shipping voice-first AI agents to production environments.", date: "May 10, 2026", category: "AI", img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80" },
-  { title: "React Native vs Flutter: A 2026 Honest Comparison", excerpt: "Performance, DX, ecosystem — what actually matters when you ship.", date: "Apr 28, 2026", category: "Mobile", img: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80" },
-  { title: "Designing Multi-Tenant SaaS Databases That Don't Break", excerpt: "Row-level security, sharding, and the trade-offs you should know upfront.", date: "Apr 14, 2026", category: "Engineering", img: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=900&q=80" },
-  { title: "From MVP to Series A: What Founders Get Wrong About Tech Debt", excerpt: "Three patterns we've seen across 30+ startups — and how to avoid them.", date: "Apr 02, 2026", category: "Product", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&q=80" },
-  { title: "Stripe + Razorpay + PayPal: A Unified Billing Architecture", excerpt: "A reference architecture for accepting global payments without chaos.", date: "Mar 22, 2026", category: "Payments", img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=80" },
+  { title: "How to Choose the Right Tech Stack for Your SaaS in 2026", excerpt: "A pragmatic guide to picking a stack that scales without slowing your team down.", date: "May 18, 2026", category: "SaaS", img: images.blogTechStack },
+  { title: "AI Voice Agents: The New Customer Support Backbone", excerpt: "What we learned shipping voice-first AI agents to production environments.", date: "May 10, 2026", category: "AI", img: images.blogAiVoice },
+  { title: "React Native vs Flutter: A 2026 Honest Comparison", excerpt: "Performance, DX, ecosystem — what actually matters when you ship.", date: "Apr 28, 2026", category: "Mobile", img: images.blogRnFlutter },
+  { title: "Designing Multi-Tenant SaaS Databases That Don't Break", excerpt: "Row-level security, sharding, and the trade-offs you should know upfront.", date: "Apr 14, 2026", category: "Engineering", img: images.blogMultitenant },
+  { title: "From MVP to Series A: What Founders Get Wrong About Tech Debt", excerpt: "Three patterns we've seen across 30+ startups — and how to avoid them.", date: "Apr 02, 2026", category: "Product", img: images.blogMvp },
+  { title: "Stripe + Razorpay + PayPal: A Unified Billing Architecture", excerpt: "A reference architecture for accepting global payments without chaos.", date: "Mar 22, 2026", category: "Payments", img: images.blogBilling },
 ];
 
 function BlogsPage() {
