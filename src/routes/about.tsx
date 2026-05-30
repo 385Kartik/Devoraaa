@@ -18,6 +18,7 @@ import { images } from "@/assets/images";
 const nayanImg = images.nayan;
 const kartikImg = images.kartik;
 
+
 export const Route = createFileRoute("/about")({
   component: AboutPage,
   head: () => ({
