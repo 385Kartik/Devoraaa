@@ -79,9 +79,9 @@ function CaseStudyPage() {
               <h3 className="mt-5 text-xl font-semibold">
                 {s.title} <span className="font-normal text-muted-foreground">{s.subtitle}</span>
               </h3>
-              <a href="#" className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-secondary py-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+              <Link to="/case-study/$slug" params={{ slug: s.slug }} className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-secondary py-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
                 Read Case Study <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </article>
           ))}
         </div>
