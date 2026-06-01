@@ -208,7 +208,7 @@ function CaseStudyDetailPage() {
             whileInView="show"
             viewport={{ once: true, margin: "-60px" }}
           >
-            {study.approach.map((a, i) => (
+            {study.approach.map((a: { title: string; body: string }, i: number) => (
               <motion.div
                 key={i}
                 variants={fadeUp}
