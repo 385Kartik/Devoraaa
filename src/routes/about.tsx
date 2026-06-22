@@ -40,8 +40,8 @@ export const Route = createFileRoute("/about")({
 });
 
 const stats = [
-  { icon: Package, value: "20+", label: "Products Delivered" },
-  { icon: Users, value: "3+", label: "Years of Experience" },
+  { icon: Package, value: "10+", label: "Products Delivered" },
+  { icon: Users, value: "1+", label: "Years of Experience" },
   { icon: Building2, value: "15+", label: "Industries Served" },
   { icon: Globe, value: "Global", label: "Delivery" },
   { icon: Star, value: "98%", label: "Retention Rate" },
@@ -244,11 +244,11 @@ function DifferentFlow() {
                 {/* Diamond body: rotate 45° → 0° on hover */}
                 <motion.div
                   variants={{
-                    rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
-                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
+                    rest:    { rotate: 45, scale: 1,    borderColor: "rgba(255,255,255,0.05)" },
+                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 0.50)" },
                   }}
                   transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                  className="relative z-10 h-[62px] w-[62px] rounded-[4px] border-2 bg-card shadow-xl shadow-primary/15 flex items-center justify-center cursor-default"
+                  className="relative z-10 h-[62px] w-[62px] rounded-[4px] border border-white/[0.05] bg-white/[0.02] backdrop-blur-xl shadow-2xl flex items-center justify-center cursor-default"
                 >
                   {/* Number — counter-rotates so it always reads upright */}
                   <motion.span
@@ -421,14 +421,15 @@ function TiltCard({
         const cy = rect.height / 2;
         const rotX =  ((y - cy) / cy) * -rotateDepth;
         const rotY =  ((x - cx) / cx) *  rotateDepth;
-        el.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(${translateDepth}px)`;
+        el.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(${translateDepth}px) scale3d(1.03, 1.03, 1.03)`;
+        el.style.boxShadow = `${-rotY * 1.5}px ${rotX * 1.5}px 30px rgba(0,0,0,0.5), 0 0 20px rgba(var(--primary), 0.2)`;
 
         // move shimmer highlight to follow cursor
         const shimmer = shimmerRef.current;
         if (shimmer) {
           const px = (x / rect.width)  * 100;
           const py = (y / rect.height) * 100;
-          shimmer.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 45%, transparent 70%)`;
+          shimmer.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 45%, transparent 70%)`;
           shimmer.style.opacity = "1";
         }
       });
@@ -439,7 +440,10 @@ function TiltCard({
   const onMouseLeave = useCallback(() => {
     if (rafId.current) cancelAnimationFrame(rafId.current);
     const el = ref.current;
-    if (el) el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+    if (el) {
+      el.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale3d(1, 1, 1)";
+      el.style.boxShadow = "none";
+    }
     const shimmer = shimmerRef.current;
     if (shimmer) shimmer.style.opacity = "0";
   }, []);
@@ -481,7 +485,7 @@ function AboutPage() {
           initial="hidden"
           animate="show"
           variants={fadeUp}
-          className="text-4xl font-bold leading-tight md:text-6xl"
+          className="text-4xl font-black leading-tight tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 md:text-6xl pb-2"
         >
           Your Global Technology Partner for{" "}
           <span className="text-primary">AI Automation</span> & Custom Software Development
@@ -509,8 +513,9 @@ function AboutPage() {
       </section>
 
       {/* STATS */}
-      <section className="mx-auto mt-20 max-w-[1400px] px-6 md:px-10">
-        <div className="grid gap-4 rounded-3xl bg-card p-8 sm:grid-cols-2 md:grid-cols-5">
+      <section className="mx-auto mt-20 max-w-[1400px] px-6 md:px-10 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="grid gap-4 rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl shadow-2xl p-8 sm:grid-cols-2 md:grid-cols-5 relative z-10">
           {stats.map((s) => (
             <motion.div
               key={s.label}
@@ -575,8 +580,9 @@ function AboutPage() {
       {/* WHY CLIENTS CHOOSE */}
       <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Why Choose Us</p>
-        <h2 className="mt-3 text-4xl font-bold md:text-5xl">Why Clients Choose Devora</h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
+        <h2 className="mt-3 text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 md:text-5xl pb-1">Why Clients Choose Devora</h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-2 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[60%] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
           {whyChoose.map((w, i) => (
             <motion.div
               key={i}
@@ -584,7 +590,7 @@ function AboutPage() {
               whileInView="show"
               viewport={{ once: true }}
               variants={fadeUp}
-              className="flex gap-4 rounded-2xl bg-card p-6"
+              className="flex gap-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl p-6 hover:bg-white/[0.04] hover:border-primary/30 transition-all duration-300 relative z-10"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
                 <w.icon className="h-5 w-5" />
@@ -614,8 +620,9 @@ function AboutPage() {
           speed, and trust.
         </p>
 
-        <div className="mt-10 grid gap-8 md:grid-cols-2">
-          <div className="rounded-3xl bg-card p-8">
+        <div className="mt-10 grid gap-8 md:grid-cols-2 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
+          <div className="rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl p-8 relative z-10 hover:border-primary/20 transition-colors">
             <h3 className="text-2xl font-bold">Our Mission</h3>
             <ul className="mt-6 space-y-4">
               {mission.map((m, i) => (
@@ -626,7 +633,7 @@ function AboutPage() {
               ))}
             </ul>
           </div>
-          <div className="rounded-3xl bg-card p-8">
+          <div className="rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl p-8 relative z-10 hover:border-primary/20 transition-colors">
             <h3 className="text-2xl font-bold">Our Vision</h3>
             <ul className="mt-6 space-y-4">
               {vision.map((v, i) => (
@@ -641,116 +648,135 @@ function AboutPage() {
       </section>
 
       {/* TEAM */}
-      <section className="mx-auto mt-28 max-w-[1400px] px-6 md:px-10">
+      <section className="mx-auto mt-28 max-w-[1000px] px-6 md:px-10">
         <p className="text-sm uppercase tracking-widest text-primary">Team</p>
         <h2 className="mt-3 text-4xl font-bold md:text-5xl">The Minds Behind Devora</h2>
         <p className="mt-4 max-w-3xl text-muted-foreground">
           The vision, experience, and engineering discipline shaping how we build technology.
         </p>
 
-        {/* Nayan */}
-        <div className="mt-14 grid items-center gap-10 md:grid-cols-2">
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            variants={fadeUp}
-          >
-            <TiltCard className="relative overflow-hidden rounded-3xl bg-card">
-              <img src={nayanImg} alt="Nayan Sachani — Co-founder, Devora" className="h-full w-full object-cover" />
-            </TiltCard>
-          </motion.div>
-          <div>
-            <h3 className="text-2xl font-bold">Nayan Sachani <span className="text-primary">(Co-founder & Head of Client Experience)</span></h3>
-            <div className="mt-5 space-y-4 text-muted-foreground">
-              <p>
-                Nayan Sachani is a product strategist and design-led co-founder whose journey began
-                during college, driven by a deep curiosity for how thoughtful interfaces shape
-                real business outcomes. He co-founded Devora with a single belief: software should
-                feel as good as it performs.
-              </p>
-              <p>
-                As the face of client experience at Devora, Nayan leads UI/UX design, brand
-                direction, and end-to-end client management — turning ambiguous briefs into clear
-                product roadmaps. His expertise spans interaction design, design systems, user
-                research, and conversion-focused interfaces across web apps, mobile apps, SaaS
-                platforms, and AI products.
-              </p>
-              <p>
-                Beyond design, Nayan is the trusted voice for every client at Devora — aligning
-                expectations, managing delivery cycles, and ensuring every engagement ends in
-                measurable value. His strength lies in transforming complex requirements into
-                elegant, scalable user experiences that customers genuinely love.
-              </p>
-            </div>
-            <a
-              href="https://www.linkedin.com/in/nayan-sachani-636477316?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-            >
-              <Linkedin className="h-4 w-4" /> Connect on LinkedIn
-            </a>
-          </div>
-        </div>
-
-        {/* Kartik */}
-        <div className="mt-20 grid items-center gap-10 md:grid-cols-2">
-          <div className="md:order-2">
+        <div className="mt-10 grid items-start gap-5 md:grid-cols-2">
+          {/* Kartik */}
+          <div className="flex flex-col gap-6">
             <motion.div
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
               variants={fadeUp}
+              className="group relative"
             >
-              <TiltCard
-                className="relative overflow-hidden rounded-3xl bg-card"
-                style={{ clipPath: "inset(0 0 20% 0 round 1.5rem)" }}
-              >
-                <img src={kartikImg} alt="Kartik Parmar — Co-founder & CTO, Devora" className="h-full w-full object-cover object-top" />
+              {/* Animated Glow Behind Card */}
+              <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-primary/30 to-transparent opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100 group-hover:blur-2xl" />
+              
+              <TiltCard rotateDepth={5} translateDepth={10} className="relative overflow-hidden rounded-3xl bg-white/[0.02] border border-white/[0.05] shadow-2xl aspect-[4/5] cursor-pointer z-10 transition-colors duration-500 group-hover:border-primary/40">
+                <img 
+                  src={kartikImg} 
+                  alt="Kartik Parmar — Co-founder & CTO, Devora" 
+                  className="h-full w-full object-cover scale-3d scale-120 object-top transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100" 
+                />
+                
+                {/* Subtle overlay gradient */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-0" />
+                
+                {/* Floating Tag */}
+                <div className="absolute bottom-6 left-6 translate-y-8 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                  <span className="rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-4 py-2 text-xs font-bold tracking-widest text-primary shadow-xl">
+                    Engineering
+                  </span>
+                </div>
               </TiltCard>
             </motion.div>
-          </div>
-          <div className="md:order-1">
-            <h3 className="text-2xl font-bold">Kartik Parmar <span className="text-primary">(Co-founder & Chief Technology Officer)</span></h3>
-            <div className="mt-5 space-y-4 text-muted-foreground">
-              <p>
-                Kartik Parmar is a backend systems architect and engineering leader with a sharp
-                focus on building distributed, fault-tolerant, and high-throughput platforms. With
-                deep hands-on expertise in microservice orchestration, API design, event-driven
-                architectures, and database engineering, he specializes in translating ambitious
-                product visions into production-grade infrastructure that scales.
-              </p>
-              <p>
-                As CTO at Devora, Kartik leads technical strategy, system design, and engineering
-                execution across web apps, mobile applications, SaaS platforms, and AI-driven
-                solutions. His stack expertise spans Node.js, Python, Go, PostgreSQL, Redis,
-                Kafka, Docker, Kubernetes, and cloud-native deployments on AWS and GCP — all
-                wired with CI/CD pipelines, observability, and zero-downtime release patterns.
-              </p>
-              <p>
-                He champions clean architecture, domain-driven design, secure-by-default
-                engineering, and long-term scalability over short-term shortcuts. From schema
-                modeling and query optimization to authentication, payments, and real-time
-                pipelines, Kartik builds the technical foundations that quietly power every
-                product Devora ships.
-              </p>
-              <p>
-                Beyond code, he partners closely with founders and product teams to shape
-                technical roadmaps, optimize developer workflows, and ensure every architectural
-                decision compounds into business growth. His strength lies in bringing engineering
-                clarity to complex problems and building systems that scale with the company's
-                vision.
-              </p>
+            <div>
+              <h3 className="text-2xl font-bold">Kartik Parmar</h3>
+              <p className="text-primary font-medium mt-1">Co-founder & Chief Technology Officer</p>
+              <div className="mt-5 space-y-4 text-muted-foreground">
+                <p>
+                  Kartik Parmar is a Full Stack Developer at Numberwale and the visionary Founder of Print-It. With a deep passion for crafting immersive digital experiences and pushing the boundaries of web development, he has built an impressive portfolio featuring projects like Uni-Brain, NavRang, AI automation systems, and dynamic web applications.
+                </p>
+                <p>
+                  As the Co-founder & Chief Technology Officer at Devora, Kartik brings his extensive expertise in 3D web technologies, React, Three.js, and interactive design to the forefront. He specializes in translating ambitious product visions into robust, production-grade infrastructure that seamlessly scales across both frontend and backend systems.
+                </p>
+                <p>
+                  Kartik champions clean architecture, innovative design patterns, and long-term scalability. His technical foundation quietly powers every complex solution Devora ships, ensuring that from schema modeling to real-time pipelines, the architecture is as elegant as the user experience.
+                </p>
+                <p>
+                  Beyond his technical prowess, he partners closely with teams to shape ambitious technical roadmaps and optimize developer workflows. His true strength lies in his ability to blend creative vision with engineering clarity, building scalable systems that compound into undeniable business growth.
+                </p>
+              </div>
+              <a
+                href="https://www.linkedin.com/in/parmarkartik385/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              >
+                <Linkedin className="h-4 w-4" /> Connect on LinkedIn
+              </a>
             </div>
-            <a
-              href="https://www.linkedin.com/in/parmarkartik385/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+          </div>
+
+          {/* Nayan */}
+          <div className="flex flex-col gap-6">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="group relative"
             >
-              <Linkedin className="h-4 w-4" /> Connect on LinkedIn
-            </a>
+              {/* Animated Glow Behind Card */}
+              <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-bl from-primary/30 to-transparent opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100 group-hover:blur-2xl" />
+
+              <TiltCard rotateDepth={5} translateDepth={10} className="relative overflow-hidden rounded-3xl bg-white/[0.02] border border-white/[0.05] shadow-2xl aspect-[4/5] cursor-pointer z-10 transition-colors duration-500 group-hover:border-primary/40">
+                <img 
+                  src={nayanImg} 
+                  alt="Nayan Sachani — Co-founder, Devora" 
+                  className="h-full w-full object-cover filter contrast-125 transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100" 
+                />
+                
+                {/* Subtle overlay gradient */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-0" />
+                
+                {/* Floating Tag */}
+                <div className="absolute bottom-6 left-6 translate-y-8 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                  <span className="rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-4 py-2 text-xs font-bold tracking-widest text-primary shadow-xl">
+                    Design & Strategy
+                  </span>
+                </div>
+              </TiltCard>
+            </motion.div>
+            <div>
+              <h3 className="text-2xl font-bold">Nayan Sachani</h3>
+              <p className="text-primary font-medium mt-1">Co-founder & Head of Client Experience</p>
+              <div className="mt-5 space-y-4 text-muted-foreground">
+                <p>
+                  Nayan Sachani is a product strategist and design-led co-founder whose journey began
+                  during college, driven by a deep curiosity for how thoughtful interfaces shape
+                  real business outcomes. He co-founded Devora with a single belief: software should
+                  feel as good as it performs.
+                </p>
+                <p>
+                  As the face of client experience at Devora, Nayan leads UI/UX design, brand
+                  direction, and end-to-end client management — turning ambiguous briefs into clear
+                  product roadmaps. His expertise spans interaction design, design systems, user
+                  research, and conversion-focused interfaces across web apps, mobile apps, SaaS
+                  platforms, and AI products.
+                </p>
+                <p>
+                  Beyond design, Nayan is the trusted voice for every client at Devora — aligning
+                  expectations, managing delivery cycles, and ensuring every engagement ends in
+                  measurable value. His strength lies in transforming complex requirements into
+                  elegant, scalable user experiences that customers genuinely love.
+                </p>
+              </div>
+              <a
+                href="https://www.linkedin.com/in/nayan-sachani-636477316?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              >
+                <Linkedin className="h-4 w-4" /> Connect on LinkedIn
+              </a>
+            </div>
           </div>
         </div>
       </section>

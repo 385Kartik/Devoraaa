@@ -1,15 +1,41 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Code, Smartphone, Cloud, Bot, Gamepad2, Monitor, Star } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useMotionTemplate } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Globe } from "@/components/Globe";
+import { projectsData } from "@/data/projectsData";
+import Galaxy from "@/components/Galaxy";
+import { Vortex } from "@/components/ui/vortex";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(6);
+    if (error) throw error;
+    
+    const dbProjects = (data || []).map((p: any) => ({
+      id: p.id,
+      title: p.title,
+      category: p.category,
+      shortDesc: p.short_desc,
+      image: p.image,
+      slug: p.slug,
+      techStack: p.tech_stack || [],
+    }));
+
+    const merged = [...dbProjects, ...projectsData].slice(0, 6);
+    return { projects: merged };
+  },
   component: HomePage,
   head: () => ({
     meta: [
-      { title: "Devora — Custom Software Development for Web, Mobile, SaaS & AI" },
-      { name: "description", content: "Devora delivers scalable web, mobile, SaaS and AI automation solutions for startups and enterprises worldwide." },
+      { title: "devoraaa — Custom Software Development for Web, Mobile, SaaS & AI" },
+      { name: "description", content: "devoraaa delivers scalable web, mobile, SaaS and AI automation solutions for startups and enterprises worldwide." },
     ],
   }),
 });
@@ -18,9 +44,7 @@ const services = [
   { icon: Code,       title: "Web App Development",        desc: "Modern web app solutions built for speed, scalability, and long-term performance." },
   { icon: Smartphone, title: "Mobile App Development",     desc: "Secure enterprise-grade mobile apps with scalable architecture and seamless UX." },
   { icon: Cloud,      title: "Custom SaaS Development",    desc: "From MVP launch to full-scale product growth with recurring revenue in mind." },
-  { icon: Bot,        title: "AI Automation & Voice Agents", desc: "AI agents and automation that reduce manual work and boost operational efficiency." },
-  { icon: Gamepad2,   title: "Game Development",           desc: "Immersive game development with smooth performance and engaging gameplay." },
-  { icon: Monitor,    title: "Desktop App Development",    desc: "Reliable desktop apps for productivity tools, dashboards, and enterprise systems." },
+  { icon: Bot,        title: "AI Automation and Chat bots", desc: "AI agents and automation that reduce manual work and boost operational efficiency." },
 ];
 
 import { images } from "@/assets/images";
@@ -44,9 +68,9 @@ const process = [
 ];
 
 const testimonials = [
-  { name: "Kirtan karkar",    company: "Knish",              text: "Loved working with the team. Young, charismatic, and highly skilled. Would highly recommend Devora." },
+  { name: "Kirtan karkar",    company: "Knish",              text: "Loved working with the team. Young, charismatic, and highly skilled. Would highly recommend devoraaa." },
   { name: "Yogesh Kalathiya", company: "Wheatflow",          text: "An amazing team of hardworking talent. Worked on multiple projects, all delivered on time." },
-  { name: "Shubh Raval",      company: "Shree gopal agency", text: "Devora did wonderful work creating my website. Patient, thoughtful, and attention to detail." },
+  { name: "Shubh Raval",      company: "Shree gopal agency", text: "devoraaa did wonderful work creating my website. Patient, thoughtful, and attention to detail." },
 ];
 
 const clients = [
@@ -76,107 +100,114 @@ function HeroSparkles() {
     if (!ctx) return;
 
     let animId: number;
-    let mouseX = -999, mouseY = -999, prevMX = -999, prevMY = -999;
+    let mx = -1000;
+    let my = -1000;
 
-    type Star = {
-      x: number; y: number; r: number; vx: number; vy: number;
-      phase: number; twinkleSpeed: number; baseBright: number;
-      flickerTimer: number; flickerAlpha: number;
-    };
-    type ShootingStar = { x: number; y: number; vx: number; vy: number; life: number; decay: number; trailLen: number; width: number; };
-    type CursorDot  = { x: number; y: number; vx: number; vy: number; life: number; decay: number; r: number; };
-
-    let stars: Star[] = [], shooters: ShootingStar[] = [], cursorDots: CursorDot[] = [], frame = 0;
-
-    const resize = () => { canvas!.width = canvas!.offsetWidth; canvas!.height = canvas!.offsetHeight; };
-
-    const spawnStar = (ex?: number, ey?: number): Star => {
-      const r = 0.4 + Math.random() * Math.random() * 2.2;
-      return { x: ex ?? Math.random()*canvas!.width, y: ey ?? Math.random()*canvas!.height, r,
-        vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35,
-        phase: Math.random()*Math.PI*2, twinkleSpeed: 0.004+Math.random()*0.025,
-        baseBright: 0.65+Math.random()*0.35, flickerTimer: 0, flickerAlpha: 1 };
+    type Particle = { x: number; y: number; vx: number; vy: number; r: number; baseAlpha: number };
+    let particles: Particle[] = [];
+    
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        canvas.width = parent.offsetWidth;
+        canvas.height = parent.offsetHeight;
+      }
     };
 
-    const spawnShooter = (): ShootingStar => {
-      const angle = Math.PI/8 + Math.random()*(Math.PI/5);
-      const speed = 9 + Math.random()*12;
-      return { x: Math.random()*canvas!.width*0.6, y: Math.random()*canvas!.height*0.5,
-        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
-        life: 1, decay: 0.012+Math.random()*0.012, trailLen: 60+Math.random()*120, width: 0.8+Math.random()*1.2 };
+    const init = () => {
+      resize();
+      const count = Math.min(150, Math.round((canvas.width * canvas.height) / 10000));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: 0.5 + Math.random() * 1.5,
+        baseAlpha: 0.1 + Math.random() * 0.4
+      }));
     };
-
-    const spawnCursorDot = (x: number, y: number) => {
-      const angle = Math.random()*Math.PI*2, speed = 0.8+Math.random()*3;
-      cursorDots.push({ x: x+(Math.random()-0.5)*8, y: y+(Math.random()-0.5)*8,
-        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed-0.6,
-        life: 1, decay: 0.03+Math.random()*0.035, r: 0.6+Math.random()*1.8 });
-    };
-
-    const init = () => { resize(); stars = Array.from({ length: Math.round((canvas!.width*canvas!.height)/(940*292)*200) }, () => spawnStar()); };
 
     const draw = () => {
-      if (!canvas || !ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      frame++;
+      
+      const maxDist = 150;
+      const mouseRepelRadius = 150;
 
-      for (const s of stars) {
-        s.x += s.vx; s.y += s.vy;
-        if (s.x < -5) s.x = canvas.width+5; if (s.x > canvas.width+5) s.x = -5;
-        if (s.y < -5) s.y = canvas.height+5; if (s.y > canvas.height+5) s.y = -5;
-        if (Math.random() < 0.0008) { s.vx=(Math.random()-0.5)*0.35; s.vy=(Math.random()-0.5)*0.35; }
-        s.phase += s.twinkleSpeed;
-        let alpha = s.baseBright * (0.55 + 0.45*Math.sin(s.phase));
-        if (s.flickerTimer > 0) { s.flickerTimer--; alpha *= s.flickerAlpha; }
-        else if (Math.random() < 0.0005) { s.flickerTimer=3+Math.floor(Math.random()*6); s.flickerAlpha=Math.random()<0.5?0.05:1.5; }
-        alpha = Math.max(0, Math.min(1, alpha));
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${alpha})`; ctx.fill();
-        if (s.r > 1.4) { ctx.beginPath(); ctx.arc(s.x, s.y, 0.5, 0, Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${Math.min(1,alpha*1.4)})`; ctx.fill(); }
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        
+        // Mouse interact: subtle repel
+        const dx = p.x - mx;
+        const dy = p.y - my;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < mouseRepelRadius) {
+          const force = (mouseRepelRadius - dist) / mouseRepelRadius;
+          p.x += (dx / dist) * force * 1.5;
+          p.y += (dy / dist) * force * 1.5;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        // Draw star/particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.baseAlpha})`;
+        ctx.fill();
+
+        // Draw professional constellation lines
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dpX = p.x - p2.x;
+          const dpY = p.y - p2.y;
+          const dpDist = Math.sqrt(dpX*dpX + dpY*dpY);
+          
+          if (dpDist < maxDist) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - dpDist/maxDist) * 0.15})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
       }
-
-      if (frame%110===0||(frame%40===0&&Math.random()<0.18)) shooters.push(spawnShooter());
-      shooters = shooters.filter(ss => {
-        ss.x+=ss.vx; ss.y+=ss.vy; ss.life-=ss.decay;
-        if (ss.life<=0||ss.x>canvas.width+100||ss.y>canvas.height+100) return false;
-        const norm=Math.hypot(ss.vx,ss.vy);
-        const tx=ss.x-(ss.vx/norm)*ss.trailLen*ss.life, ty=ss.y-(ss.vy/norm)*ss.trailLen*ss.life;
-        const g=ctx.createLinearGradient(tx,ty,ss.x,ss.y);
-        g.addColorStop(0,`rgba(255,255,255,0)`); g.addColorStop(0.7,`rgba(255,255,255,${ss.life*0.5})`); g.addColorStop(1,`rgba(255,255,255,${ss.life})`);
-        ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(ss.x,ss.y); ctx.strokeStyle=g; ctx.lineWidth=ss.width; ctx.lineCap="round"; ctx.stroke();
-        ctx.beginPath(); ctx.arc(ss.x,ss.y,ss.width*1.2,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${ss.life})`; ctx.fill();
-        return true;
-      });
-
-      const dx=mouseX-prevMX, dy=mouseY-prevMY, spd=Math.hypot(dx,dy);
-      if (spd>2&&mouseX>0) { const n=Math.min(6,Math.floor(spd*0.52)); for (let i=0;i<n;i++) spawnCursorDot(mouseX,mouseY); }
-      prevMX=mouseX; prevMY=mouseY;
-
-      cursorDots = cursorDots.filter(cd => {
-        cd.x+=cd.vx; cd.y+=cd.vy; cd.vy-=0.06; cd.vx*=0.96; cd.life-=cd.decay;
-        if (cd.life<=0) return false;
-        ctx.beginPath(); ctx.arc(cd.x,cd.y,cd.r*cd.life,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${cd.life*cd.life})`; ctx.fill();
-        return true;
-      });
-
       animId = requestAnimationFrame(draw);
     };
 
-    const onMove  = (e: MouseEvent) => { const r=canvas!.getBoundingClientRect(); mouseX=e.clientX-r.left; mouseY=e.clientY-r.top; };
-    const onTouch = (e: TouchEvent) => { const r=canvas!.getBoundingClientRect(); mouseX=e.touches[0].clientX-r.left; mouseY=e.touches[0].clientY-r.top; };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchmove", onTouch, { passive: true });
-    const ro = new ResizeObserver(() => { resize(); init(); });
-    ro.observe(canvas);
-    init(); draw();
-    return () => { cancelAnimationFrame(animId); ro.disconnect(); window.removeEventListener("mousemove",onMove); window.removeEventListener("touchmove",onTouch); };
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mx = e.clientX - rect.left;
+      my = e.clientY - rect.top;
+    };
+    const handleMouseLeave = () => { mx = -1000; my = -1000; };
+
+    window.addEventListener("resize", init);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+    
+    init();
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", init);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
   return (
-    <>
-      <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0"
-        style={{ background: "radial-gradient(ellipse 80% 70% at 50% 45%, transparent 30%, var(--background) 100%)" }} />
-    </>
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="absolute inset-0 z-0 h-full w-full"
+    />
   );
 }
 
@@ -445,6 +476,20 @@ function ProcessFlow() {
           preserveAspectRatio="none"
           aria-hidden="true"
         >
+          <defs>
+            <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="1" />
+              <stop offset="100%" stopColor="#ea580c" stopOpacity="0.8" />
+            </linearGradient>
+            <filter id="glowProcess">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
           <path
             d={pathD}
             fill="none"
@@ -457,29 +502,13 @@ function ProcessFlow() {
           <motion.path
             d={pathD}
             fill="none"
-            stroke="currentColor"
-            strokeWidth={3}
-            strokeDasharray="10 8"
+            stroke="url(#processGradient)"
+            strokeWidth={4}
             strokeLinecap="round"
-            className="text-primary"
-            style={{ strokeOpacity: 0.55 }}
+            filter="url(#glowProcess)"
             initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1] }}
-          />
-          <motion.circle
-            r={5}
-            fill="currentColor"
-            className="text-primary"
-            fillOpacity={0.9}
-            initial={{ offsetDistance: "0%", opacity: 0 }}
-            whileInView={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 2.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
-            style={{
-              offsetPath: `path("${pathD}")`,
-            } as React.CSSProperties}
+            animate={{ pathLength: [0, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           />
         </svg>
 
@@ -489,78 +518,40 @@ function ProcessFlow() {
           const topPct  = (pt.y / VBH) * 100;
 
           return (
-            <motion.div
+            <div
               key={step}
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ delay: i * 0.18 + 0.5, type: "spring", stiffness: 260, damping: 20 }}
+              className="absolute group z-10"
               style={{
-                position: "absolute",
-                left:      `${leftPct}%`,
-                top:       `${topPct}%`,
+                left: `${leftPct}%`,
+                top: `${topPct}%`,
                 transform: "translate(-50%, -50%)",
               }}
             >
+              {/* Glow Behind Node */}
+              <div className="absolute inset-0 rounded-full bg-primary/20 blur-[24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              
               <motion.div
-                initial="rest"
-                animate="rest"
-                whileHover="hovered"
-                style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ delay: i * 0.15 + 0.3, type: "spring", stiffness: 200, damping: 20 }}
+                className="relative flex flex-col items-center justify-center cursor-default"
               >
-                {/* Label — always above the diamond, centred */}
-                <motion.div
-                  variants={{
-                    rest:    { scale: 1,    opacity: 0.75, y: 0  },
-                    hovered: { scale: 1.22, opacity: 1,    y: -6 },
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                  style={{
-                    position:        "absolute",
-                    left:            "50%",
-                    transform:       "translateX(-50%)",
-                    width:           "11rem",
-                    textAlign:       "center",
-                    transformOrigin: "bottom center",
-                    bottom:          "calc(100% + 16px)",
-                  }}
-                  className="text-[14px] font-semibold leading-tight text-foreground tracking-wide pointer-events-none"
-                >
-                  {step}
-                </motion.div>
+                {/* Number Circle */}
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-primary/40 bg-background/90 backdrop-blur-md shadow-lg transition-all duration-300 group-hover:border-primary group-hover:scale-110 group-hover:bg-primary/10">
+                  <span className="text-lg font-bold text-primary transition-colors">
+                    0{i + 1}
+                  </span>
+                </div>
 
-                {/* Glow aura */}
-                <motion.div
-                  variants={{
-                    rest:    { opacity: 0, scale: 0.7 },
-                    hovered: { opacity: 1, scale: 1.7 },
-                  }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="absolute inset-0 rounded-sm bg-primary/20 blur-xl pointer-events-none"
-                />
-
-                {/* Diamond body */}
-                <motion.div
-                  variants={{
-                    rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
-                    hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
-                  }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                  className="relative z-10 h-[62px] w-[62px] rounded-[4px] border-2 bg-card shadow-xl shadow-primary/15 flex items-center justify-center cursor-default"
-                >
-                  <motion.span
-                    variants={{
-                      rest:    { rotate: -45, scale: 1    },
-                      hovered: { rotate: 0,   scale: 1.15 },
-                    }}
-                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                    className="text-[16px] font-black text-primary leading-none select-none block"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </motion.span>
-                </motion.div>
+                {/* Label */}
+                <div className="absolute top-[120%] w-[160px] text-center pointer-events-none">
+                  <h3 className="text-[14px] font-semibold text-foreground/80 transition-colors group-hover:text-primary">
+                    {step}
+                  </h3>
+                </div>
               </motion.div>
-            </motion.div>
+            </div>
           );
         })}
       </div>
@@ -585,29 +576,12 @@ function ProcessFlow() {
           <motion.path
             d="M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5"
             fill="none"
-            stroke="currentColor"
-            strokeWidth={2.5}
-            strokeDasharray="8 7"
+            stroke="url(#processGradient)"
+            strokeWidth={3}
             strokeLinecap="round"
-            className="text-primary"
-            style={{ strokeOpacity: 0.6 }}
             initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1] }}
-          />
-          <motion.circle
-            r={4}
-            fill="currentColor"
-            className="text-primary"
-            fillOpacity={0.9}
-            initial={{ offsetDistance: "0%", opacity: 0 }}
-            whileInView={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 2.4, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
-            style={{
-              offsetPath: `path("M 26 26.5 C 26 73 294 73 294 119.5 C 294 166 26 166 26 212.5 C 26 259 294 259 294 305.5 C 294 352 26 352 26 398.5 C 26 445 294 445 294 491.5")`,
-            } as React.CSSProperties}
+            animate={{ pathLength: [0, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           />
         </svg>
 
@@ -623,42 +597,16 @@ function ProcessFlow() {
                 transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
                 className={`relative flex items-center gap-5 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
               >
-                <motion.div
-                  initial="rest"
-                  animate="rest"
-                  whileHover="hovered"
-                  style={{ flexShrink: 0, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
-                  <motion.div
-                    variants={{
-                      rest:    { opacity: 0, scale: 0.7 },
-                      hovered: { opacity: 1, scale: 1.6 },
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 rounded-[3px] bg-primary/20 blur-lg pointer-events-none"
-                  />
-                  <motion.div
-                    variants={{
-                      rest:    { rotate: 45, scale: 1,    borderColor: "hsl(var(--primary) / 0.62)" },
-                      hovered: { rotate: 0,  scale: 1.12, borderColor: "hsl(var(--primary) / 1.00)" },
-                    }}
-                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                    className="relative z-10 h-[53px] w-[53px] rounded-[3px] border-2 bg-card shadow-md shadow-primary/10 flex items-center justify-center"
-                  >
-                    <motion.span
-                      variants={{
-                        rest:    { rotate: -45, scale: 1    },
-                        hovered: { rotate: 0,   scale: 1.12 },
-                      }}
-                      transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                      className="text-[13px] font-black text-primary leading-none select-none block"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </motion.span>
-                  </motion.div>
-                </motion.div>
+                <div className="group relative flex items-center justify-center flex-shrink-0">
+                  <div className="absolute inset-0 rounded-full bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-background/90 backdrop-blur-md shadow-md transition-all duration-300 group-hover:border-primary group-hover:scale-110">
+                    <span className="text-[14px] font-bold text-primary">
+                      0{i + 1}
+                    </span>
+                  </div>
+                </div>
 
-                <p className={`text-[17px] font-semibold leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
+                <p className={`text-[16px] font-medium leading-snug text-foreground/80 ${isLeft ? "text-left" : "text-right"}`}>
                   {step}
                 </p>
               </motion.div>
@@ -674,25 +622,34 @@ function ProcessFlow() {
 // ─── TestimonialMarquee ───────────────────────────────────────────────────────
 function TestimonialMarquee() {
   const [paused, setPaused] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
 
-  const repeated = [...testimonials, ...testimonials, ...testimonials];
+  const repeated1 = [...testimonials, ...testimonials, ...testimonials];
+  const repeated2 = [...testimonials.slice().reverse(), ...testimonials.slice().reverse(), ...testimonials.slice().reverse()];
 
   return (
     <>
       <style>{`
-        @keyframes testimonial-scroll {
+        @keyframes testimonial-scroll-left {
           from { transform: translateX(0); }
           to   { transform: translateX(calc(-100% / 3)); }
+        }
+        @keyframes testimonial-scroll-right {
+          from { transform: translateX(calc(-100% / 3)); }
+          to   { transform: translateX(0); }
         }
       `}</style>
 
       <div
-        className="mt-16 overflow-hidden"
+        className="mt-16 overflow-hidden flex flex-col gap-6"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => {
           setPaused(false);
           setHoveredIndex(null);
+        }}
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)"
         }}
       >
         <div
@@ -700,30 +657,27 @@ function TestimonialMarquee() {
             display: "flex",
             gap: "24px",
             width: "max-content",
-            animation: "testimonial-scroll 22s linear infinite",
+            animation: "testimonial-scroll-left 25s linear infinite",
             animationPlayState: paused ? "paused" : "running",
           }}
         >
-          {repeated.map((t, i) => (
+          {repeated1.map((t, i) => {
+            const id = `row1-${i}`;
+            return (
             <motion.div
-              key={i}
-              onMouseEnter={() => setHoveredIndex(i)}
+              key={id}
+              onMouseEnter={() => setHoveredIndex(id)}
               onMouseLeave={() => setHoveredIndex(null)}
               animate={{
-                opacity:
-                  hoveredIndex === null
-                    ? 1
-                    : hoveredIndex === i
-                    ? 1
-                    : 0.22,
-                scale: hoveredIndex === i ? 1.04 : 1,
+                opacity: hoveredIndex === null || hoveredIndex === id ? 1 : 0.22,
+                scale: hoveredIndex === id ? 1.04 : 1,
               }}
               transition={{ duration: 0.3, ease: "easeOut" }}
               style={{
-                minWidth: "clamp(280px, 40vw, 500px)",
+                minWidth: "clamp(280px, 40vw, 400px)",
                 flexShrink: 0,
                 boxShadow:
-                  hoveredIndex === i
+                  hoveredIndex === id
                     ? "0 0 0 1.5px hsl(var(--primary)), 0 16px 48px hsl(var(--primary) / 0.20)"
                     : "none",
                 transition: "box-shadow 0.3s ease",
@@ -741,7 +695,53 @@ function TestimonialMarquee() {
                 <p className="text-xs text-muted-foreground">{t.company}</p>
               </div>
             </motion.div>
-          ))}
+          )})}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "24px",
+            width: "max-content",
+            animation: "testimonial-scroll-right 30s linear infinite",
+            animationPlayState: paused ? "paused" : "running",
+          }}
+        >
+          {repeated2.map((t, i) => {
+            const id = `row2-${i}`;
+            return (
+            <motion.div
+              key={id}
+              onMouseEnter={() => setHoveredIndex(id)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              animate={{
+                opacity: hoveredIndex === null || hoveredIndex === id ? 1 : 0.22,
+                scale: hoveredIndex === id ? 1.04 : 1,
+              }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              style={{
+                minWidth: "clamp(280px, 40vw, 400px)",
+                flexShrink: 0,
+                boxShadow:
+                  hoveredIndex === id
+                    ? "0 0 0 1.5px hsl(var(--primary)), 0 16px 48px hsl(var(--primary) / 0.20)"
+                    : "none",
+                transition: "box-shadow 0.3s ease",
+              }}
+              className="rounded-2xl border border-border/40 bg-card p-7 cursor-default select-none"
+            >
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, si) => (
+                  <Star key={si} className="h-4 w-4 fill-primary text-primary" />
+                ))}
+              </div>
+              <p className="mt-4 text-sm text-foreground/90">"{t.text}"</p>
+              <div className="mt-5">
+                <p className="font-semibold">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.company}</p>
+              </div>
+            </motion.div>
+          )})}
         </div>
       </div>
     </>
@@ -750,35 +750,173 @@ function TestimonialMarquee() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+function ServiceCard({ s }: { s: any }) {
+  return (
+    <motion.div 
+      variants={fadeUp} 
+      className="group relative overflow-hidden rounded-[20px] bg-card p-[1px] shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+    >
+      {/* Spinning Gradient Border */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 h-[300%] w-[300%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0%,transparent_75%,hsl(var(--primary))_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      {/* Card Content Wrapper */}
+      <div className="relative z-10 flex h-full w-full flex-col items-start gap-4 rounded-[19px] bg-background/95 backdrop-blur-2xl p-8 transition-colors group-hover:bg-background/80">
+        
+        {/* Ambient Icon Glow */}
+        <div className="absolute top-8 left-8 h-12 w-12 rounded-full bg-primary/30 blur-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        {/* Icon */}
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 text-primary transition-transform duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-[0_0_30px_rgba(234,88,12,0.4)]">
+          <s.icon className="h-6 w-6" />
+        </div>
+        
+        <h3 className="mt-4 text-2xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary">
+          {s.title}
+        </h3>
+        
+        <p className="text-muted-foreground leading-relaxed transition-opacity duration-300 group-hover:opacity-90">
+          {s.desc}
+        </p>
+
+        {/* Learn More link */}
+        <div className="mt-auto pt-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <Link to="/contact" className="text-sm font-semibold text-primary hover:underline flex items-center gap-2">
+            Discuss for Projects <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ProjectCard({ p }: { p: any }) {
+  return (
+    <motion.article
+      variants={fadeUp}
+      className="group relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/20 shadow-xl transition-transform duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(234,88,12,0.15)]"
+    >
+      {/* Background Image */}
+      <img 
+        src={p.image} 
+        alt={p.title} 
+        loading="lazy"
+        className="h-full w-full object-cover transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-110 group-hover:brightness-[0.3]"
+      />
+      
+      {/* Default Subtle Gradient (Always visible at bottom) */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-opacity duration-500 group-hover:opacity-0" />
+
+      {/* Default State Title (Visible initially, fades out on hover) */}
+      <div className="absolute inset-x-0 bottom-0 p-6 transition-opacity duration-500 group-hover:opacity-0">
+        <h3 className="text-xl font-bold text-white mb-1">{p.title}</h3>
+        <p className="text-primary font-medium tracking-wide uppercase text-[10px]">{p.category}</p>
+      </div>
+
+      {/* Floating Category Badge (Appears on hover) */}
+      <div className="absolute top-4 right-4 z-20 opacity-0 translate-y-[-10px] transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+        <span className="rounded-full bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white shadow-xl">
+          {p.category}
+        </span>
+      </div>
+
+      {/* Content Slide Up */}
+      <div className="absolute inset-x-0 bottom-0 z-20 translate-y-[101%] flex flex-col justify-end p-6 h-full bg-black/40 backdrop-blur-[4px] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:translate-y-0">
+        <h3 className="text-2xl font-bold text-white mb-2">{p.title}</h3>
+        <p className="line-clamp-2 text-white/80 mb-5 text-sm leading-relaxed">{p.shortDesc}</p>
+        
+        {/* Tech Stack */}
+        <div className="flex flex-wrap gap-1.5 mb-6 opacity-0 translate-y-4 transition-all duration-500 delay-100 group-hover:opacity-100 group-hover:translate-y-0">
+          {p.techStack.slice(0, 3).map((tech: string) => (
+            <span key={tech} className="rounded-md bg-white/10 backdrop-blur-md px-2 py-1 text-[9px] font-medium uppercase tracking-wider text-white border border-white/20">
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        {/* Action Button */}
+        <a 
+          href={`/case-study/${p.slug}`} 
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-transform hover:bg-orange-500 hover:scale-[1.02]"
+        >
+          View Case Study <ArrowRight className="h-4 w-4" />
+        </a>
+      </div>
+    </motion.article>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 function HomePage() {
+  const { projects } = Route.useLoaderData();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY       = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.3]);
   const glowScale   = useTransform(scrollYProgress, [0, 1], [1, 1.4]);
 
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), { damping: 30, stiffness: 200 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), { damping: 30, stiffness: 200 });
+
+  useEffect(() => {
+    const handleGlobalMove = (e: MouseEvent) => {
+      const x = e.clientX / window.innerWidth - 0.5;
+      const y = e.clientY / window.innerHeight - 0.5;
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+    window.addEventListener("mousemove", handleGlobalMove);
+    return () => window.removeEventListener("mousemove", handleGlobalMove);
+  }, [mouseX, mouseY]);
+
   return (
     <SiteLayout>
-      {/* HERO */}
-      <section ref={heroRef} className="relative overflow-hidden">
-        <HeroSparkles />
-        <motion.div style={{ scale: glowScale }}
-          className="pointer-events-none absolute left-1/2 top-32 z-0 h-[800px] w-[800px] -translate-x-1/2 rounded-full">
-          {[0,1,2,3,4].map((i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 0.5 - i*0.08, scale: 1 }}
-              transition={{ duration: 1.2, delay: i*0.1, ease: "easeOut" }}
-              className="absolute inset-0 rounded-full border border-primary/10"
-              style={{ transform: `scale(${0.4 + i*0.15})` }} />
-          ))}
-          <div className="absolute inset-1/4 rounded-full bg-primary/10 blur-3xl" />
-        </motion.div>
+      {/* FIXED INTERACTIVE BACKGROUND SPOTLIGHT */}
+      <motion.div
+        className="pointer-events-none fixed inset-0 z-[1] opacity-60"
+        style={{
+          background: useMotionTemplate`radial-gradient(900px circle at calc(50% + ${useTransform(mouseX, [-0.5, 0.5], [-450, 450])}px) calc(50% + ${useTransform(mouseY, [-0.5, 0.5], [-450, 450])}px), rgba(234,88,12,0.12), transparent 70%)`,
+        }}
+      />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }}
+      {/* HERO */}
+      <section ref={heroRef} className="relative overflow-hidden w-full border-b border-white/5 bg-black">
+        <div className="absolute inset-0 z-0">
+            <Galaxy 
+            mouseInteraction={false}
+            density={1}
+            glowIntensity={0.3}
+            saturation={0}
+            hueShift={140}
+            twinkleIntensity={0.3}
+            rotationSpeed={0}
+            repulsionStrength={2}
+            autoCenterRepulsion={0}
+            starSpeed={0.15}
+            speed={0.5}
+          />
+        </div>
+        {/* GIANT DEVORAAA POSITIONED AT THE TOP GAP */}
+        <div className="absolute inset-x-0 top-12 md:top-16 z-0 flex justify-center pointer-events-none select-none overflow-hidden">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 0.04, y: 0 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="text-[14vw] md:text-[10vw] font-black tracking-tighter text-white whitespace-nowrap"
+          >
+            devoraaa
+          </motion.h1>
+        </div>
+
+        <motion.div style={{ y: heroY, opacity: heroOpacity, perspective: 1200 }}
           className="relative z-10 w-full px-4 sm:px-6 lg:px-10 pt-24 pb-16 text-center">
           <motion.div initial="hidden" animate="show" variants={stagger}
-            className="rounded-3xl bg-card/40 px-6 py-16 backdrop-blur-sm md:px-12 md:py-24">
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            className="py-16 md:py-24 relative">
+            <motion.div style={{ transform: "translateZ(60px)", transformStyle: "preserve-3d" }}>
             <motion.h1 variants={fadeUp}
               className="text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
               Custom Software Development<br />for Web, Mobile, SaaS &{" "}
@@ -792,7 +930,7 @@ function HomePage() {
               </span>
             </motion.h1>
             <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-2xl text-base text-muted-foreground md:text-lg">
-              Devora delivers scalable web app solutions, high-performing mobile apps, SaaS platforms,
+              devoraaa delivers scalable web app solutions, high-performing mobile apps, SaaS platforms,
               and intelligent automation for startups and enterprises worldwide.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap justify-center gap-3">
@@ -803,8 +941,9 @@ function HomePage() {
               </Link>
               <Link to="/case-study"
                 className="rounded-full border border-border bg-card/60 px-8 py-3.5 text-sm font-medium backdrop-blur hover:border-primary">
-                Why Devora?
+                Why devoraaa?
               </Link>
+            </motion.div>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -839,19 +978,7 @@ function HomePage() {
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}
           className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
-            <motion.div key={s.title} variants={fadeUp} whileHover={{ y: -8 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card p-7">
-              <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/10 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
-              <motion.div whileHover={{ rotate: 8, scale: 1.1 }} className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                <s.icon className="h-6 w-6" />
-              </motion.div>
-              <h3 className="mt-5 text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-              <Link to="/contact" className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                Discuss for Projects <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </motion.div>
+            <ServiceCard key={s.title} s={s} />
           ))}
         </motion.div>
       </section>
@@ -871,21 +998,10 @@ function HomePage() {
           <motion.p variants={fadeUp} className="text-center text-sm uppercase tracking-widest text-primary">Our Work</motion.p>
           <motion.h2 variants={fadeUp} className="mt-2 text-center text-4xl font-bold md:text-5xl">Real Products We've Built</motion.h2>
         </motion.div>
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}
-          className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-20px" }} variants={stagger}
+          className="mt-12 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => (
-            <motion.article key={p.title} variants={fadeUp} whileHover={{ y: -8 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="group flex flex-col overflow-hidden rounded-2xl bg-card p-5">
-              <div className="overflow-hidden rounded-xl">
-                <motion.img src={p.img} alt={p.title} loading="lazy"
-                  whileHover={{ scale: 1.08 }} transition={{ duration: 0.6 }}
-                  className="h-56 w-full object-cover" />
-              </div>
-              <h3 className="mt-5 text-lg font-semibold">{p.title}</h3>
-              <p className="text-sm text-muted-foreground">{p.sub}</p>
-              <p className="mt-2 text-xs uppercase tracking-wider text-primary">{p.tag}</p>
-            </motion.article>
+            <ProjectCard key={p.id} p={p} />
           ))}
         </motion.div>
         <div className="mt-10 text-center">
@@ -912,14 +1028,14 @@ function HomePage() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 1.1, ease: "easeOut" }}
-          className="relative mx-auto -mb-16 h-[480px] w-full md:h-[580px]"
+          className="relative mx-auto mb-10 h-[480px] w-full md:h-[580px]"
           style={{ overflow: "visible" }}
         >
           <p className="absolute left-1/2 top-6 z-20 -translate-x-1/2 select-none text-center text-xs uppercase tracking-[0.25em] text-muted-foreground/50">
             Serving clients across the globe
           </p>
-          <div className="absolute inset-0">
-            <GlobeCanvas />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Globe />
           </div>
           <div
             aria-hidden="true"
@@ -940,21 +1056,46 @@ function HomePage() {
       <section className="mt-28 w-full px-4 sm:px-6 lg:px-10 pb-28">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/70 p-12 text-center text-primary-foreground">
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-            className="absolute -right-32 -top-32 h-96 w-96 rounded-full border border-white/20" />
-          <motion.div animate={{ rotate: -360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full border border-white/20" />
-          <h2 className="relative text-3xl font-bold md:text-5xl">
-            Your vision deserves the right tech partner.
-          </h2>
-          <p className="relative mx-auto mt-4 max-w-2xl opacity-90">
-            Let's build something reliable, scalable, and future-ready together.
-          </p>
-          <Link to="/contact"
-            className="relative mt-7 inline-flex items-center gap-2 rounded-full bg-background px-7 py-3 text-sm font-medium text-foreground transition-transform hover:scale-105">
-            Book a Discovery Call <ArrowRight className="h-4 w-4" />
-          </Link>
+          className="relative overflow-hidden rounded-3xl bg-card p-12 text-center border border-white/10"
+        >
+          {/* Hypnotic Gradient Mesh Background */}
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+            <motion.div
+              animate={{ x: ["0%", "20%", "-20%", "0%"], y: ["0%", "-20%", "20%", "0%"] }}
+              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+              className="absolute -top-[50%] -left-[10%] w-[80%] h-[150%] rounded-full bg-primary/40 blur-[120px]"
+            />
+            <motion.div
+              animate={{ x: ["0%", "-30%", "20%", "0%"], y: ["0%", "20%", "-10%", "0%"] }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="absolute top-[10%] -right-[20%] w-[70%] h-[120%] rounded-full bg-blue-500/30 blur-[100px]"
+            />
+            <motion.div
+              animate={{ x: ["0%", "30%", "-10%", "0%"], y: ["0%", "30%", "-30%", "0%"] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className="absolute -bottom-[40%] left-[20%] w-[90%] h-[100%] rounded-full bg-purple-500/30 blur-[120px]"
+            />
+            <motion.div
+              style={{
+                background: useMotionTemplate`radial-gradient(600px circle at calc(50% + ${useTransform(mouseX, [-0.5, 0.5], [-300, 300])}px) calc(50% + ${useTransform(mouseY, [-0.5, 0.5], [-300, 300])}px), rgba(255,255,255,0.15), transparent 60%)`
+              }}
+              className="absolute inset-0"
+            />
+          </div>
+          <div className="absolute inset-0 bg-background/40 backdrop-blur-3xl z-10" />
+
+          <div className="relative z-20 py-10">
+            <h2 className="text-3xl font-bold md:text-5xl">
+              Your vision deserves the right tech partner.
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground text-lg">
+              Let's build something reliable, scalable, and future-ready together.
+            </p>
+            <Link to="/contact"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(234,88,12,0.4)]">
+              Book a Discovery Call <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </motion.div>
       </section>
     </SiteLayout>

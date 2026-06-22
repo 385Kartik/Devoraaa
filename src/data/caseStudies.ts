@@ -5,7 +5,7 @@ export interface CaseStudyDetail {
   title: string;
   subtitle: string;
   hero: string;
-  image: ImageKey;
+  image: ImageKey | string;
   client: string;
   industry: string;
   platform: string;
@@ -16,424 +16,222 @@ export interface CaseStudyDetail {
   results: string[];
   revenue: { before: string; after: string };
   impact: string;
+  gallery?: string[];
 }
 
 export const caseStudies: CaseStudyDetail[] = [
   {
-    slug: "sov-portal",
-    title: "SOV Portal",
-    subtitle: "Edtech Portal For Students & Agents",
-    hero: "Studying abroad is a life-changing journey — we built a platform that manages every step with clarity, speed and precision.",
-    image: "sovPortal",
-    client: "SOV Portal",
+    slug: "print-it",
+    title: "PRINT-IT",
+    subtitle: "Campus Printing Platform",
+    hero: "A full-stack campus printing platform that completely eliminated the chaos of physical print queues. Students upload PDFs, pay online, and collect their prints.",
+    image: "/printit1.0.png",
+    gallery: [
+      "/printit1.0.png",
+      "/printit2.0.png",
+      "/printit3.0.png",
+      "/printit4.0.png",
+      "/printit5.0.png",
+      "/printit6.png"
+    ],
+    client: "Universal College of Engineering",
+    industry: "Edtech / Services",
+    platform: "Web App",
+    services: "Full-Stack Development, AWS Hosting, Payment Integration",
+    overview: "Built an end-to-end campus printing platform officially adopted by Universal College of Engineering, Mumbai. Reduced student queue wait time by 50%+.",
+    challenges: [
+      "Students wasted significant time standing in physical print queues.",
+      "No digital printing solution existed on campus.",
+      "Cash handling at the counter caused friction."
+    ],
+    approach: [
+      { title: "Direct Uploads", body: "PDF Uploads directly to Amazon S3 with signed URLs." },
+      { title: "Razorpay Payments", body: "UPI, Card, and Net Banking support." },
+      { title: "OTP Authentication", body: "Passwordless login via OTP." },
+      { title: "AWS EC2 High Availability", body: "Production deployment ensuring platform stays live during peak hours." }
+    ],
+    results: [
+      "Officially adopted by Universal College of Engineering.",
+      "Student queue waiting time reduced by 50%+.",
+      "Profitable, scalable business model with active users."
+    ],
+    revenue: { before: "Manual cash operations", after: "Profitable self-sustaining model" },
+    impact: "The standard printing solution for the campus, drastically reducing wait times."
+  },
+  {
+    slug: "navrang",
+    title: "NAVRANG",
+    subtitle: "D2C E-Commerce Brand",
+    hero: "A direct-to-consumer brand for Navratri collections. Built everything from product catalog to Razorpay payments.",
+    image: "/navrang0.png",
+    gallery: ["/navrang1.png", "/navrang2.png", "/navrang3.png", "/navrang4.png", "/navrang5.png"],
+    client: "NavRang",
+    industry: "E-Commerce",
+    platform: "Web Platform",
+    services: "Product Design, Web Development, Razorpay Integration",
+    overview: "Built NavRang — a direct-to-consumer brand for Navratri. A full-stack D2C eCommerce brand with real sales and profitability.",
+    challenges: [
+      "Offline Navratri sellers lack digital presence.",
+      "Complex checkout systems drop sales."
+    ],
+    approach: [
+      { title: "Product Catalog", body: "Rich media display via AWS S3." },
+      { title: "Fast Checkout", body: "OTP-based login for zero friction." }
+    ],
+    results: [
+      "Profitable venture with real sales.",
+      "Frictionless checkout experience."
+    ],
+    revenue: { before: "No digital presence", after: "Real revenue generated during Navratri season." },
+    impact: "Enabled offline collections to reach a wider digital audience."
+  },
+  {
+    slug: "wheatflow",
+    title: "WHEATFLOW",
+    subtitle: "B2B Dashboard for Grain Distribution",
+    hero: "A production-grade B2B operations dashboard built for Anaj Sathi handling 2.4M+ records with zero UI lag.",
+    image: "/wheatflow1.png",
+    gallery: ["/wheatflow1.png", "/wheatflow2.png", "/wheatflow3.png", "/wheatflow4.0.png", "/wheatflow5.png"],
+    client: "Anaj Sathi",
+    industry: "B2B Logistics",
+    platform: "Web Dashboard",
+    services: "Full-Stack Dashboard, React Query, Supabase",
+    overview: "Built for Anaj Sathi — a grain distribution business. Handles massive data volumes, complex order grouping, driver logistics, automated financial tracking, and full fiscal-year management.",
+    challenges: [
+      "Managed thousands of daily grain orders across multiple customers manually in spreadsheets.",
+      "Needed a dashboard that could handle millions of records without freezing.",
+      "Complex grouping and financial automation required."
+    ],
+    approach: [
+      { title: "High-Performance Rendering", body: "Zero UI lag using debouncing, useMemo, and React Query." },
+      { title: "Multi-axis Order Grouping", body: "Orders grouped by customer, location, and product simultaneously." },
+      { title: "Logistics Module", body: "Full driver assignment and dispatch tracking." },
+      { title: "Financial Tracking", body: "Automated pending payment alerts and financial summaries." }
+    ],
+    results: [
+      "Moved entirely off spreadsheets.",
+      "Handles 2.4M+ records with zero UI lag.",
+      "Automated financial alerts reduced missed payments."
+    ],
+    revenue: { before: "Manual spreadsheet management", after: "Automated tracking preventing missed payments." },
+    impact: "Streamlined daily dispatch operations and complex order grouping."
+  },
+  {
+    slug: "waves-and-wires",
+    title: "WAVES & WIRES",
+    subtitle: "Custom E-Commerce Platform",
+    hero: "Architected a complete e-commerce platform from scratch — production-grade, atomic, and secured for an electric appliance company.",
+    image: "/ww1.png",
+    client: "Waves & Wires Technologies LLP",
+    industry: "E-Commerce",
+    platform: "Web Platform",
+    services: "Atomic Transactions, CSP Security, Custom Admin Dashboard",
+    overview: "A fully custom platform with a customer-facing store and a powerful admin dashboard, deployed with CSP + HSTS security headers and atomic PostgreSQL logic to prevent overselling.",
+    challenges: [
+      "Zero online presence.",
+      "Needed a custom e-commerce platform with real inventory management.",
+      "Required automatic refunds and an admin dashboard built for their operations workflow."
+    ],
+    approach: [
+      { title: "Atomic Order Placement", body: "PostgreSQL RPC ensures stock is locked and decremented atomically." },
+      { title: "Customer Store", body: "Product catalog with filtering, Razorpay checkout, and OTP login." },
+      { title: "Real-time Order Tracking", body: "Live status timeline and automatic refunds on cancellation." },
+      { title: "Admin Revenue Dashboard", body: "Recharts-powered analytics for revenue, orders, and low-stock alerts." }
+    ],
+    results: [
+      "Eliminated overselling risk entirely with atomic transactions.",
+      "Admin dashboard gave the team real-time revenue and inventory visibility.",
+      "Zero unauthorized data access due to strict RLS and OTP auth."
+    ],
+    revenue: { before: "No online sales channel", after: "Scalable e-commerce store driving new revenue." },
+    impact: "Launched a complete online store with a system far beyond what any off-the-shelf solution could offer."
+  },
+  {
+    slug: "gopal-stationery",
+    title: "GOPAL STATIONERY",
+    subtitle: "Local E-Commerce Platform",
+    hero: "Complete e-commerce platform for Gopal Stationery — built from scratch with a full admin dashboard.",
+    image: "/gopal1.png",
+    gallery: ["/gopal1.png", "/gopal2.png", "/gopal3.png", "/gopal4.png", "/gopal5.png"],
+    client: "Gopal Stationery",
+    industry: "E-Commerce",
+    platform: "Web Platform",
+    services: "E-Commerce Workflow, Supabase, Automated Emails",
+    overview: "Directly approached to architect their entire e-commerce system from zero. Customer-facing store with advanced checkout flows, and a powerful admin dashboard.",
+    challenges: [
+      "A local stationery business needed to digitize and scale their sales online efficiently."
+    ],
+    approach: [
+      { title: "Full eCommerce Workflow", body: "Complete cart and checkout experience tailored for local delivery." },
+      { title: "Automated Notifications", body: "Nodemailer integration for real-time order updates." }
+    ],
+    results: [
+      "Successfully enabled the local business to scale their sales online."
+    ],
+    revenue: { before: "Offline local sales only", after: "Expanded reach via digital orders." },
+    impact: "Digitized a traditional stationery business into a modern online storefront."
+  },
+  {
+    slug: "college-predictor",
+    title: "COLLEGE PREDICTOR",
+    subtitle: "MHT-CET Score Mapping Tool",
+    hero: "Score-to-college mapping tool that guided 50%+ of Mira Road students through engineering admissions.",
+    image: "/cp1.png",
+    client: "Get Analyticx",
     industry: "Edtech",
+    platform: "Web Tool",
+    services: "Frontend Engineering, Algorithm Logic",
+    overview: "A web tool that helps engineering aspirants predict their likely college admissions based on MHT-CET scores. Handled complex CAP-round cutoff logic.",
+    challenges: [
+      "Engineering admissions are highly competitive and confusing.",
+      "Students often make poor choices because they don't know realistic cutoff options."
+    ],
+    approach: [
+      { title: "Score-to-College Mapping", body: "Instant mapping based on historical cutoff data." },
+      { title: "Category & Branch Filters", body: "Filter by category, branch, and university quota in real time." }
+    ],
+    results: [
+      "Used by over 50% of engineering aspirants in the Mira Road region.",
+      "Significantly reduced student anxiety during admissions."
+    ],
+    revenue: { before: "Manual counseling", after: "Massive scale via a digital tool." },
+    impact: "Became the go-to tool for students in the region before admissions."
+  },
+  {
+    slug: "vibetix",
+    title: "VIBETIX",
+    subtitle: "Dynamic Event Ticketing Platform",
+    hero: "Event ticketing platform with dynamic pricing and QR-based check-ins. Won Hackathonix by cutting ticket processing time by 30%.",
+    image: "/vibetix1.png",
+    gallery: ["/vibetix1.png", "/vibetix2.png", "/vibetix3.png", "/vibetix4.png", "/vibetix5.png"],
+    client: "Hackathonix Winner",
+    industry: "Events / Ticketing",
     platform: "Web Platform",
-    services: "Product Strategy, UI/UX, Web & App Development, Admin Dashboard, QA & Testing",
-    overview:
-      "The client approached Devora with a vision to create an all-in-one digital platform to simplify the study-abroad process — connecting students, agents, universities and partners under one ecosystem for seamless management of applications, admissions and visa processes.",
+    services: "Dynamic Pricing Algorithm, QR Integration",
+    overview: "A complete event ticketing system built and delivered within a hackathon. Dynamic pricing based on demand, QR code entry for instant check-ins, and split payment support.",
     challenges: [
-      "No centralized system to manage students, agents and partner universities.",
-      "Manual handling of applications, leading to delays and data loss.",
-      "Lack of visibility and coordination among stakeholders.",
-      "Difficulty tracking visa lodgements, offer letters and student progress.",
-      "No digital platform to explore universities and programs across countries.",
-      "Inability to scale operations without automation and reporting tools.",
+      "Event organizers waste massive time on manual ticketing.",
+      "Slow entry queues and no real-time data on attendance."
     ],
     approach: [
-      { title: "Role-Based Access System", body: "Dedicated dashboards for Students, Agents, Super Admins, Employees and Partner Admins." },
-      { title: "Offer Letter & Visa Management", body: "Apply, upload documents and track status in real time." },
-      { title: "Global Database Integration", body: "5,000+ colleges across 35+ countries with advanced filters." },
-      { title: "IELTS, Flight & Tourist Visa Modules", body: "A one-stop solution for global education services." },
-      { title: "Automated Notifications", body: "Real-time status updates throughout the journey." },
-      { title: "Modern & Scalable Architecture", body: "High performance, secure data handling, responsive UI." },
+      { title: "Dynamic Pricing Engine", body: "Prices adjust automatically based on demand and time to event." },
+      { title: "QR-Based Check-in", body: "Scan on entry for instant verification without paper lists." },
+      { title: "Split Payments", body: "Groups can split ticket costs across multiple payers seamlessly." }
     ],
     results: [
-      "400% improvement in operational efficiency with automated workflows.",
-      "70% reduction in manual processing time for applications and visa tracking.",
-      "85% higher engagement among agents and partner institutions.",
-      "Thousands of student profiles onboarded within the first months.",
-      "Real-time collaboration between agents and universities.",
+      "Won the Hackathonix competition.",
+      "Reduced ticket processing time by 30% vs manual methods."
     ],
-    revenue: {
-      before: "Client operated manually with limited capacity to monetize processes.",
-      after: "Digital operations, premium agent access and partner collaborations led to a 3x revenue increase within six months.",
-    },
-    impact:
-      "SOV Portal revolutionized the study-abroad process — a connected, transparent and scalable ecosystem now powering thousands of student journeys across 35+ countries.",
-  },
-  {
-    slug: "wise-talk",
-    title: "Wise Talk",
-    subtitle: "Career Guidance Mobile Application",
-    hero: "An AI-assisted career mentor in your pocket — pairing students with the right counsellors at the right moment.",
-    image: "wiseTalk",
-    client: "Wise Talk",
-    industry: "Edtech / Career",
-    platform: "iOS & Android",
-    services: "Mobile App Development, UX, Real-time Chat, Payments",
-    overview:
-      "Wise Talk needed a mobile-first platform to connect career aspirants with verified mentors through chat, calls and scheduled sessions.",
-    challenges: [
-      "Fragmented mentor discovery and trust signals.",
-      "No reliable real-time chat or call infrastructure.",
-      "Manual scheduling and payment reconciliation.",
-      "Low retention without personalized recommendations.",
-    ],
-    approach: [
-      { title: "Verified Mentor Marketplace", body: "Profile verification, ratings and category filtering." },
-      { title: "Realtime Chat & Calls", body: "Low-latency messaging and voice with session billing." },
-      { title: "Smart Scheduling", body: "Calendar sync, time-zone aware bookings and reminders." },
-      { title: "Wallet & Payouts", body: "Integrated wallet, secure payments and automated payouts." },
-    ],
-    results: [
-      "60% faster mentor-to-student matching.",
-      "3x increase in session bookings within 4 months.",
-      "Sub-second chat latency across regions.",
-    ],
-    revenue: {
-      before: "Manual bookings with limited monetization options.",
-      after: "Recurring subscriptions and per-minute billing unlocked 2.5x revenue growth.",
-    },
-    impact: "Wise Talk became the go-to career-guidance app for thousands of students seeking trusted mentorship.",
-  },
-  {
-    slug: "connecting-soulmate",
-    title: "Connecting Soulmate",
-    subtitle: "Matrimony Web Application",
-    hero: "A modern matrimony platform that combines privacy, trust and meaningful matchmaking.",
-    image: "csWeb",
-    client: "Connecting Soulmate",
-    industry: "Matrimony / Social",
-    platform: "Web Platform",
-    services: "Product Design, Web Development, Matchmaking Engine, Admin Panel",
-    overview:
-      "We re-imagined the matrimony experience with a privacy-first profile system, intelligent match suggestions and a powerful admin dashboard.",
-    challenges: [
-      "Profile spam and unverified users on legacy systems.",
-      "Limited match accuracy with rule-based filters.",
-      "Poor mobile experience leading to drop-offs.",
-    ],
-    approach: [
-      { title: "Verified Profiles", body: "KYC-based verification, photo privacy and report flows." },
-      { title: "Smart Matching", body: "Preference + behavior weighted recommendations." },
-      { title: "Premium Plans", body: "Tiered membership with priority messaging and visibility." },
-    ],
-    results: [
-      "5x increase in verified profiles within 90 days.",
-      "40% lift in successful match conversations.",
-      "Drop-off reduced by 35% on mobile flows.",
-    ],
-    revenue: {
-      before: "Flat one-time membership with limited upsell.",
-      after: "Tiered subscriptions and boosts grew ARPU by 2.2x.",
-    },
-    impact: "A trusted matchmaking platform that successfully connects families across communities.",
-  },
-  {
-    slug: "brand-monkey",
-    title: "Brand Monkey",
-    subtitle: "Employee Management System",
-    hero: "An end-to-end EMS that brings attendance, payroll and performance into one delightful dashboard.",
-    image: "brandMonkey",
-    client: "Brand Monkey",
-    industry: "Marketing Agency",
-    platform: "Web Platform",
-    services: "Custom EMS, Payroll, Attendance, Reporting",
-    overview:
-      "Brand Monkey needed a single source of truth for HR, attendance and payroll — replacing spreadsheets with a modern web app.",
-    challenges: [
-      "Disconnected tools for attendance, leaves and payroll.",
-      "Manual salary computations causing errors.",
-      "No central visibility into team performance.",
-    ],
-    approach: [
-      { title: "Unified Dashboard", body: "Attendance, leaves, payroll and performance in one view." },
-      { title: "Automated Payroll", body: "Salary, tax and reimbursement calculations on autopilot." },
-      { title: "Role-based Access", body: "Granular permissions for HR, managers and employees." },
-    ],
-    results: [
-      "90% reduction in payroll processing time.",
-      "Zero salary calculation errors after rollout.",
-      "100% adoption across departments in 3 weeks.",
-    ],
-    revenue: {
-      before: "Operations bottlenecked by manual HR work.",
-      after: "Reclaimed bandwidth enabled the team to take on 2x more client projects.",
-    },
-    impact: "An EMS that pays for itself — saving hours every week and powering a growing agency.",
-  },
-  {
-    slug: "connecting-soulmate-mobile",
-    title: "Connecting Soulmate",
-    subtitle: "Matrimony Mobile Application",
-    hero: "The full matrimony experience — natively crafted for iOS and Android.",
-    image: "csMobile",
-    client: "Connecting Soulmate",
-    industry: "Matrimony / Social",
-    platform: "iOS & Android",
-    services: "Mobile App, Push Notifications, In-App Purchases",
-    overview:
-      "We extended the Connecting Soulmate web product to mobile with a native-feeling experience, push-driven engagement and seamless payments.",
-    challenges: [
-      "Need for parity with web while staying mobile-first.",
-      "Engagement loops without being intrusive.",
-      "Cross-platform payment compliance.",
-    ],
-    approach: [
-      { title: "Native UX", body: "Smooth gestures, offline support and skeleton states." },
-      { title: "Smart Notifications", body: "Personalized nudges that drive meaningful re-engagement." },
-      { title: "Compliant Payments", body: "In-app purchases configured for both stores." },
-    ],
-    results: [
-      "4.7★ average rating across stores.",
-      "2.5x DAU within first quarter.",
-      "30% lower uninstall rate vs industry benchmarks.",
-    ],
-    revenue: { before: "Web-only revenue with limited reach.", after: "Mobile added 60% incremental subscription revenue." },
-    impact: "A polished mobile experience that became the primary surface for users.",
-  },
-  {
-    slug: "mg-portal",
-    title: "MG Portal",
-    subtitle: "Raam Group — Automobile CRM",
-    hero: "A purpose-built CRM that powers showroom operations across an automobile dealer network.",
-    image: "mgPortal",
-    client: "Raam Group",
-    industry: "Automobile",
-    platform: "Web Platform",
-    services: "Custom CRM, Inventory, Reporting, Integrations",
-    overview:
-      "MG Portal centralizes leads, inventory and sales operations for a multi-location dealership group.",
-    challenges: [
-      "Leads scattered across calls, walk-ins and digital channels.",
-      "Limited visibility into showroom performance.",
-      "Manual stock and test-drive scheduling.",
-    ],
-    approach: [
-      { title: "Unified Lead Inbox", body: "Every inquiry captured, assigned and tracked to closure." },
-      { title: "Inventory & Test Drives", body: "Realtime stock, bookings and scheduling." },
-      { title: "Sales Analytics", body: "Showroom, team and model-level dashboards." },
-    ],
-    results: [
-      "35% faster lead response time.",
-      "20% lift in test-drive to booking conversions.",
-      "Single dashboard adopted across all dealerships.",
-    ],
-    revenue: { before: "Missed leads and slow follow-ups.", after: "Higher conversion drove a measurable lift in monthly bookings." },
-    impact: "A modern CRM tailored to the rhythm of automobile retail.",
-  },
-  {
-    slug: "360-car-protect",
-    title: "360 Car Protect",
-    subtitle: "Automotive Warranty Management",
-    hero: "A digital backbone for vehicle warranty, claims and service tracking.",
-    image: "car360",
-    client: "360 Car Protect",
-    industry: "Automobile",
-    platform: "Web Platform",
-    services: "Warranty Platform, Claims, Partner Network",
-    overview:
-      "We built a platform that digitizes the full lifecycle of automotive warranty — from policy issuance to claim settlement.",
-    challenges: [
-      "Paper-based policies and claim documents.",
-      "Slow claim approvals across partner garages.",
-      "No real-time view of policy or claim status.",
-    ],
-    approach: [
-      { title: "Digital Policies", body: "Issue, renew and manage policies online." },
-      { title: "Claim Workflow", body: "Document upload, multi-step approvals and audit trail." },
-      { title: "Partner Garage Portal", body: "Streamlined intake and settlement for partner workshops." },
-    ],
-    results: [
-      "70% faster claim turnaround.",
-      "100% digital policy issuance.",
-      "Significant reduction in disputes due to clear audit trails.",
-    ],
-    revenue: { before: "Manual ops capping policy volume.", after: "Digital workflows enabled 3x policy volume without team growth." },
-    impact: "An industry-grade warranty platform that builds trust with customers and partners.",
-  },
-  {
-    slug: "online-filing-india",
-    title: "Online Filing India",
-    subtitle: "Legal, Compliance & Business Services",
-    hero: "Legal and compliance services made simple — incorporation, tax filing and more, end-to-end online.",
-    image: "onlineFiling",
-    client: "Online Filing India",
-    industry: "Legal / Compliance",
-    platform: "Web Platform",
-    services: "Service Marketplace, Document Workflow, Payments",
-    overview:
-      "A digital storefront for compliance services with guided document flows and transparent pricing.",
-    challenges: [
-      "Complex services that confused first-time buyers.",
-      "Document collection sprawled across email and WhatsApp.",
-      "No clear status visibility after purchase.",
-    ],
-    approach: [
-      { title: "Guided Buying", body: "Plain-language flows that match service to need." },
-      { title: "Document Vault", body: "Secure uploads, checklists and version history." },
-      { title: "Status Tracking", body: "Live progress for every filing." },
-    ],
-    results: [
-      "2x conversion uplift on service pages.",
-      "Support tickets reduced by 40%.",
-      "Repeat purchases up significantly QoQ.",
-    ],
-    revenue: { before: "High drop-off due to manual processes.", after: "Streamlined flows drove sustained revenue growth." },
-    impact: "Made compliance approachable for thousands of small businesses.",
-  },
-  {
-    slug: "idsspl-fintech",
-    title: "IDSSPL",
-    subtitle: "Financial Technology & Reconciliation",
-    hero: "Reconciliation, reporting and financial workflows built for scale and accuracy.",
-    image: "idsspl",
-    client: "IDSSPL",
-    industry: "Fin-tech",
-    platform: "Web Platform",
-    services: "Reconciliation Engine, Reporting, Integrations",
-    overview:
-      "A robust fintech platform handling high-volume reconciliation with audit-ready reporting.",
-    challenges: [
-      "Manual reconciliation of millions of transactions.",
-      "Error-prone reporting cycles.",
-      "Integration with multiple banking partners.",
-    ],
-    approach: [
-      { title: "Rules Engine", body: "Configurable matching rules across data sources." },
-      { title: "Audit-Ready Reports", body: "Versioned reports with full traceability." },
-      { title: "Bank Integrations", body: "Secure, automated data ingestion." },
-    ],
-    results: [
-      "95% auto-match rate on transactions.",
-      "Reporting cycles cut from days to minutes.",
-      "Audit prep effort reduced by 80%.",
-    ],
-    revenue: { before: "Operations team stretched thin.", after: "Automation enabled scaling without proportional headcount growth." },
-    impact: "A reconciliation backbone trusted with mission-critical financial data.",
-  },
-  {
-    slug: "memoria-app",
-    title: "Memoria",
-    subtitle: "Social Memory App",
-    hero: "Capture the moments that matter — a beautiful, private space for shared memories.",
-    image: "memoria",
-    client: "Memoria",
-    industry: "Social",
-    platform: "iOS & Android",
-    services: "Mobile App, Media Pipeline, Social Graph",
-    overview:
-      "We crafted Memoria to feel like a warm, private diary shared with the people you love.",
-    challenges: [
-      "Smooth media uploads on flaky networks.",
-      "Privacy-first sharing without complex settings.",
-      "Performant feed with rich media.",
-    ],
-    approach: [
-      { title: "Resilient Media Pipeline", body: "Chunked uploads with background retry." },
-      { title: "Simple Privacy", body: "Defaults that protect, controls when you want them." },
-      { title: "Buttery Feed", body: "Optimized rendering for video and photo memories." },
-    ],
-    results: [
-      "Sub-2s feed load on 3G.",
-      "Upload success rate above 99%.",
-      "High organic invite rate from delighted users.",
-    ],
-    revenue: { before: "Pre-launch product idea.", after: "Strong early traction unlocked a follow-on funding round." },
-    impact: "A heartfelt app that became a daily ritual for early users.",
-  },
-  {
-    slug: "qrynto",
-    title: "Qrynto",
-    subtitle: "Anti-Counterfeiting SaaS Platform",
-    hero: "QR-powered authenticity at scale — protecting brands and customers from counterfeits.",
-    image: "qrynto",
-    client: "Qrynto",
-    industry: "SaaS / Brand Protection",
-    platform: "Web + Mobile",
-    services: "SaaS Platform, QR Engine, Brand Dashboards",
-    overview:
-      "A SaaS platform that generates secure QR codes, validates scans and provides brands with actionable analytics.",
-    challenges: [
-      "Counterfeit detection at packaging scale.",
-      "Realtime scan analytics across geographies.",
-      "Brand-specific landing experiences per scan.",
-    ],
-    approach: [
-      { title: "Secure QR Engine", body: "Tamper-evident codes with cryptographic verification." },
-      { title: "Brand Studio", body: "Custom post-scan experiences without code." },
-      { title: "Realtime Analytics", body: "Geo, device and behavior intelligence per scan." },
-    ],
-    results: [
-      "Millions of codes generated.",
-      "Realtime scan dashboards adopted by every brand customer.",
-      "Counterfeit incidents detected and resolved within hours.",
-    ],
-    revenue: { before: "Brands lacked tools to fight counterfeits.", after: "Subscription model scaled with enterprise adoption." },
-    impact: "A SaaS used by leading brands to protect revenue and customer trust.",
-  },
-  {
-    slug: "cricket-or-nothing",
-    title: "Cricket Or Nothing",
-    subtitle: "Real-Time Cricket Platform",
-    hero: "Live scores, deep stats and a fan community — built for people who breathe cricket.",
-    image: "cricketOrNothing",
-    client: "Cricket Or Nothing",
-    industry: "Sports / Media",
-    platform: "Web + Mobile",
-    services: "Realtime Platform, Data Pipelines, Community",
-    overview:
-      "A realtime cricket platform delivering live scores, fantasy stats and a vibrant fan community.",
-    challenges: [
-      "Sub-second score updates at scale.",
-      "Reliable data during peak match traffic.",
-      "Engaging community features without toxicity.",
-    ],
-    approach: [
-      { title: "Realtime Pipelines", body: "Low-latency match data fanned out globally." },
-      { title: "Scalable Infrastructure", body: "Auto-scaling for match-day traffic spikes." },
-      { title: "Community Tools", body: "Moderation, reactions and topic-based threads." },
-    ],
-    results: [
-      "Handled match-day spikes without downtime.",
-      "Sub-second score updates across devices.",
-      "Active daily community of cricket fans.",
-    ],
-    revenue: { before: "Project from scratch.", after: "Sponsorships and premium features built a durable revenue base." },
-    impact: "A fan-first cricket destination that performs at the speed of the game.",
-  },
-  {
-    slug: "shivorix-real-estate",
-    title: "Shivorix Real Estate",
-    subtitle: "Luxury Property Advisory",
-    hero: "An immersive digital presence for a premium real-estate advisory.",
-    image: "shivorix",
-    client: "Shivorix",
-    industry: "Real Estate",
-    platform: "Web Platform",
-    services: "Brand Site, Listings, Lead Capture, CMS",
-    overview:
-      "We built a polished web experience that mirrors the brand's premium positioning, with rich listings and lead-capture optimized for high-intent buyers.",
-    challenges: [
-      "Outdated presence that didn't reflect brand prestige.",
-      "Listings hard to discover and filter.",
-      "Leaky lead capture flows.",
-    ],
-    approach: [
-      { title: "Editorial Design", body: "Confident typography, cinematic imagery and refined motion." },
-      { title: "Smart Listings", body: "Powerful filtering, map view and curated collections." },
-      { title: "High-Intent Lead Flows", body: "Friction-free inquiry forms with CRM sync." },
-    ],
-    results: [
-      "Lead volume up 3x in the first quarter post-launch.",
-      "Average session duration nearly doubled.",
-      "Premium brand perception reflected in inbound enquiries.",
-    ],
-    revenue: { before: "Reliant on offline networks.", after: "Digital channel became a meaningful revenue contributor." },
-    impact: "A digital home that matches the prestige of the properties it represents.",
-  },
+    revenue: { before: "Static ticket sales", after: "Maximized revenue via demand-based pricing." },
+    impact: "Proved a highly efficient, automated alternative to traditional manual event ticketing."
+  }
 ];
 
 export const getCaseStudy = (slug: string) => caseStudies.find((c) => c.slug === slug);
 
-export const getCaseStudyImage = (c: CaseStudyDetail) => images[c.image];
+export const getCaseStudyImage = (c: CaseStudyDetail) => {
+  if (typeof c.image === "string" && c.image.startsWith("/")) {
+    return c.image;
+  }
+  return images[c.image as ImageKey];
+};

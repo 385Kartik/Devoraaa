@@ -72,16 +72,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "devoraaa — High-End Software & AI Development" },
+      { name: "description", content: "devoraaa specializes in cutting-edge web, mobile, SaaS, and AI automation for top-tier enterprises and startups." },
+      { name: "author", content: "devoraaa" },
+      { property: "og:title", content: "devoraaa — High-End Software & AI Development" },
+      { property: "og:description", content: "devoraaa specializes in cutting-edge web, mobile, SaaS, and AI automation for top-tier enterprises and startups." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@devoraaa" },
     ],
     links: [
+      {
+        rel: "icon",
+        href: "/Devora_logo.png",
+      },
       {
         rel: "stylesheet",
         href: appCss,

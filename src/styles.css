@@ -1,4 +1,5 @@
-@import "tailwindcss" source(none);
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @source "../src";
 @import "tw-animate-css";
 
@@ -48,7 +49,9 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html, body { background-color: oklch(0.12 0.005 260); color: var(--color-foreground); font-family: var(--font-display); }
+  html, body { background-color: transparent; color: var(--color-foreground); font-family: var(--font-display); }
+  /* True page background on html so canvas can layer over it */
+  html { background-color: oklch(0.08 0.005 260); }
 }
 
 @keyframes marquee {

@@ -10,7 +10,7 @@ export const Route = createFileRoute("/integrations")({
       {
         name: "description",
         content:
-          "Devora integrates with 42+ leading platforms across payments, AI, communication, analytics, CRM, and more.",
+          "Devora integrates with modern platforms across cloud, backend, AI, and payments.",
       },
     ],
   }),
@@ -24,136 +24,96 @@ const cdn = (slug: string, color?: string) =>
 
 const categories: Category[] = [
   {
+    id: "frontend",
+    name: "Frontend & UI Libraries",
+    subtitle: "Modern libraries for building beautiful interfaces.",
+    items: [
+      { name: "React", logo: cdn("react"), desc: "Component-based library for building interactive user interfaces." },
+      { name: "Tailwind CSS", logo: cdn("tailwindcss"), desc: "Utility-first CSS framework for rapid UI development." },
+      { name: "Framer Motion", logo: cdn("framer"), desc: "Production-ready motion library for React." },
+      { name: "Shadcn UI", logo: cdn("shadcnui", "ffffff"), desc: "Beautifully designed components that you can copy and paste." },
+      { name: "Aceternity UI", logo: "https://ui.aceternity.com/logo-dark.png", desc: "Copy paste the most trending components and use them in your websites." },
+      { name: "React Bits", logo: cdn("react"), desc: "A curated collection of React components and snippets." },
+    ],
+  },
+  {
+    id: "backend",
+    name: "Backend, Databases & Frameworks",
+    subtitle: "Scalable data storage and real-time infrastructure.",
+    items: [
+      { name: "PostgreSQL", logo: cdn("postgresql"), desc: "Powerful, open source object-relational database system." },
+      { name: "MySQL", logo: cdn("mysql"), desc: "World's most popular open source relational database." },
+      { name: "Supabase", logo: cdn("supabase"), desc: "Open-source Firebase alternative with Postgres, Auth, and Edge Functions." },
+      { name: "Firebase", logo: cdn("firebase"), desc: "Realtime database, authentication, cloud functions, and hosting." },
+      { name: "MongoDB", logo: cdn("mongodb"), desc: "Flexible NoSQL database for modern web applications." },
+      { name: "SQLite", logo: cdn("sqlite"), desc: "Lightweight, file-based relational database." },
+      { name: "Node.js", logo: cdn("nodedotjs"), desc: "Fast, scalable, and efficient server-side runtime." },
+      { name: "Next.js", logo: cdn("nextdotjs", "ffffff"), desc: "React framework for production with SSR and static generation." },
+    ],
+  },
+  {
     id: "payments",
     name: "Payments & Billing",
-    subtitle: "Subscriptions, one-time payments, UPI, wallets, and global payouts.",
+    subtitle: "Secure payment gateways and subscriptions.",
     items: [
-      { name: "Stripe", logo: cdn("stripe"), desc: "Subscriptions, one-time payments, payouts, and Connect." },
       { name: "Razorpay", logo: cdn("razorpay"), desc: "Indian payment gateway with UPI, cards, netbanking, and subscriptions." },
-      { name: "PayPal", logo: cdn("paypal"), desc: "Global checkout and recurring billing across 200+ markets." },
-      { name: "Paytm", logo: cdn("paytm"), desc: "Payment gateway, wallet, and UPI for Indian customers." },
+      { name: "Stripe", logo: cdn("stripe"), desc: "Global payments, subscriptions, and financial infrastructure." },
       { name: "PhonePe", logo: cdn("phonepe"), desc: "UPI-first payments and merchant collections in India." },
     ],
   },
   {
-    id: "communication",
-    name: "Communication & Messaging",
-    subtitle: "Transactional email, SMS, voice, OTP, and WhatsApp at scale.",
+    id: "cloud",
+    name: "Cloud & Infrastructure",
+    subtitle: "Reliable hosting, storage, and edge computing.",
     items: [
-      { name: "WhatsApp API", logo: cdn("whatsapp"), desc: "Cloud API for templated messages, support, and commerce flows." },
-      { name: "Twilio", logo: cdn("twilio"), desc: "SMS, voice, OTP verification, and WhatsApp Business messaging." },
-      { name: "AiSensy", letter: "A", desc: "Official WhatsApp BSP for broadcast, chatbots, and CRM." },
-      { name: "Brevo", logo: cdn("brevo"), desc: "Transactional + marketing email, SMS, and automation." },
-      { name: "SendGrid", logo: cdn("maildotru"), desc: "High-deliverability transactional email at scale." },
-      { name: "Mailgun", logo: cdn("mailgun"), desc: "Email APIs for sending, receiving, and tracking." },
+      { name: "AWS", logo: cdn("amazonaws"), desc: "Scalable cloud infrastructure (EC2, S3, RDS, Lambda)." },
+      { name: "Vercel", logo: cdn("vercel", "ffffff"), desc: "Frontend cloud and edge network for Next.js and React." },
+      { name: "Cloudflare", logo: cdn("cloudflare"), desc: "CDN, DNS, and edge security globally." },
+      { name: "Render", logo: cdn("render", "ffffff"), desc: "Unified cloud to build and run all your apps and websites." },
+      { name: "Railway", logo: cdn("railway", "ffffff"), desc: "Infrastructure platform for fast development and deployment." },
     ],
   },
   {
     id: "ai",
     name: "AI & LLMs",
-    subtitle: "Generative AI, voice agents, and intelligent automation.",
+    subtitle: "Generative AI and intelligent automation.",
     items: [
-      { name: "OpenAI", letter: "O", desc: "GPT models for chat, agents, embeddings, and assistants." },
-      { name: "Gemini", logo: cdn("googlegemini"), desc: "Google Gemini multimodal models for text, vision, and reasoning." },
-      { name: "Vapi", letter: "V", desc: "Real-time voice AI agents for sales and support calls." },
+      { name: "OpenAI", letter: "O", desc: "GPT models for text generation, embeddings, and intelligent agents." },
+      { name: "Google Gemini", logo: cdn("googlegemini"), desc: "Multimodal AI models for text, vision, and reasoning tasks." },
+      { name: "Groq", letter: "G", desc: "Fast AI inference engine for running open-source LLMs at lightning speed." },
     ],
   },
   {
-    id: "engagement",
-    name: "Notifications & Engagement",
-    subtitle: "Push, in-app, lifecycle messaging, and customer engagement.",
+    id: "communication",
+    name: "Communication & APIs",
+    subtitle: "Transactional email, SMS, and WhatsApp integrations.",
     items: [
-      { name: "OneSignal", letter: "O", desc: "Push notifications across web, mobile, and email." },
-      { name: "Firebase", logo: cdn("firebase"), desc: "Auth, realtime DB, FCM, Crashlytics, and remote config." },
-      { name: "MoEngage", letter: "M", desc: "Cross-channel customer engagement and journey orchestration." },
-      { name: "Engage", letter: "E", desc: "Customer marketing automation across email, SMS, and WhatsApp." },
+      { name: "WhatsApp API", logo: cdn("whatsapp"), desc: "Automated business messaging and customer support." },
+      { name: "Gallabox", letter: "G", desc: "WhatsApp Business API platform for conversational commerce." },
+      { name: "Twilio", logo: cdn("twilio"), desc: "SMS, voice, and OTP verification pipelines." },
+      { name: "SendGrid", logo: cdn("maildotru"), desc: "High-deliverability transactional email service." },
+      { name: "Nodemailer", letter: "N", desc: "Module for Node.js apps to allow easy as cake email sending." },
     ],
   },
   {
     id: "analytics",
     name: "Analytics & Monitoring",
-    subtitle: "Product analytics, error tracking, and behavior insights.",
+    subtitle: "Product analytics and error tracking.",
     items: [
-      { name: "Google Analytics", logo: cdn("googleanalytics"), desc: "Web and app analytics with GA4 events and conversions." },
-      { name: "Mixpanel", logo: cdn("mixpanel"), desc: "Product analytics, funnels, retention, and cohorts." },
-      { name: "Hotjar", logo: cdn("hotjar"), desc: "Heatmaps, session recordings, and user feedback." },
-      { name: "Sentry", logo: cdn("sentry"), desc: "Error tracking and performance monitoring across stacks." },
+      { name: "Google Analytics", logo: cdn("googleanalytics"), desc: "Web and app analytics for user behavior insights." },
+      { name: "Microsoft Clarity", logo: cdn("microsoft"), desc: "Free user behavior analytics with heatmaps and session recordings." },
+      { name: "Sentry", logo: cdn("sentry"), desc: "Real-time error tracking and performance monitoring." },
     ],
   },
   {
-    id: "crm",
-    name: "CRM & Customer Support",
-    subtitle: "Sales pipelines, marketing automation, and helpdesk.",
-    items: [
-      { name: "HubSpot", logo: cdn("hubspot"), desc: "CRM, marketing automation, and sales workflows." },
-      { name: "Salesforce", letter: "S", desc: "Enterprise CRM, Service Cloud, and Marketing Cloud." },
-      { name: "Zoho", logo: cdn("zoho"), desc: "CRM, mail, books, and end-to-end business automation." },
-      { name: "Zendesk", logo: cdn("zendesk"), desc: "Helpdesk, ticketing, and omnichannel support." },
-    ],
-  },
-  {
-    id: "infra",
-    name: "Cloud & Infrastructure",
-    subtitle: "CDN, security, DNS, hosting, and media delivery.",
-    items: [
-      { name: "Cloudflare", logo: cdn("cloudflare"), desc: "CDN, WAF, DNS, and edge security globally." },
-      { name: "Digital Ocean", logo: cdn("digitalocean"), desc: "Droplets, managed databases, and app platform hosting." },
-      { name: "Cloudinary", logo: cdn("cloudinary"), desc: "Image and video upload, transformation, and delivery." },
-    ],
-  },
-  {
-    id: "maps",
-    name: "Maps & Location",
-    subtitle: "Geocoding, distance APIs, and interactive maps.",
-    items: [
-      { name: "Google Maps Platform", logo: cdn("googlemaps"), desc: "Maps, places, geocoding, and distance matrix APIs." },
-      { name: "Mapbox", logo: cdn("mapbox", "ffffff"), desc: "Custom maps, navigation, and location SDKs." },
-    ],
-  },
-  {
-    id: "logistics",
-    name: "Logistics & Fulfillment",
-    subtitle: "Shipping orchestration and tracking for ecommerce.",
-    items: [
-      { name: "Shiprocket", letter: "S", desc: "Multi-courier shipping, tracking, and returns for India." },
-    ],
-  },
-  {
-    id: "stores",
+    id: "mobile",
     name: "App Distribution",
-    subtitle: "Mobile app submission, review, and release pipelines.",
+    subtitle: "Mobile app submission and release pipelines.",
     items: [
-      { name: "Apple App Store", logo: cdn("appstore", "ffffff"), desc: "iOS app submission, TestFlight, and App Store Connect." },
-      { name: "Google Play Store", logo: cdn("googleplay"), desc: "Android publishing, internal tracks, and Play Console." },
+      { name: "Apple App Store", logo: cdn("appstore", "ffffff"), desc: "iOS app submission and App Store Connect." },
+      { name: "Google Play Store", logo: cdn("googleplay"), desc: "Android publishing and Play Console." },
     ],
-  },
-  {
-    id: "automation",
-    name: "Automation & Workflows",
-    subtitle: "No-code and low-code orchestration across tools.",
-    items: [
-      { name: "n8n", logo: cdn("n8n", "ffffff"), desc: "Self-hosted workflow automation across 400+ apps." },
-      { name: "Make", logo: cdn("make", "ffffff"), desc: "Visual scenario builder for cross-app automation." },
-    ],
-  },
-  {
-    id: "scheduling",
-    name: "Scheduling & Meetings",
-    subtitle: "Calendar booking and video conferencing.",
-    items: [
-      { name: "Calendly", logo: cdn("calendly"), desc: "Automated meeting scheduling with calendar sync." },
-      { name: "Zoom", logo: cdn("zoom"), desc: "Video meetings, webinars, and SDK embeds." },
-      { name: "Google Meet", logo: cdn("googlemeet"), desc: "Video conferencing tied into Google Workspace." },
-    ],
-  },
-  {
-    id: "cms",
-    name: "Headless CMS",
-    subtitle: "Structured content APIs for web and apps.",
-    items: [
-      { name: "Strapi", logo: cdn("strapi"), desc: "Open-source headless CMS with flexible content APIs." },
-    ],
-  },
+  }
 ];
 
 /* ── Logo badge ─────────────────────────────────────────────────────────── */
@@ -201,7 +161,7 @@ function AnimatedCard({ item, index }: { item: Item; index: number }) {
   return (
     <div
       ref={ref}
-      className="group flex items-start gap-4 rounded-2xl bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10"
+      className="group flex items-start gap-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.04] hover:border-primary/30 hover:shadow-[0_0_40px_-10px_rgba(255,85,0,0.15)]"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible
@@ -251,7 +211,7 @@ function CategorySection({ cat }: { cat: Category }) {
           transition: "opacity 0.4s ease, transform 0.4s ease",
         }}
       >
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+        <h2 className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 md:text-4xl pb-1">
           {cat.name}
         </h2>
         <p className="mt-2 text-muted-foreground">{cat.subtitle}</p>
@@ -303,12 +263,13 @@ function IntegrationsPage() {
   return (
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="mx-auto mt-6 max-w-[1400px] px-6 md:px-10">
-        <div className="rounded-3xl bg-card/60 px-6 py-20 text-center md:py-28">
+      <section className="mx-auto mt-6 max-w-[1400px] px-6 md:px-10 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[80%] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
+        <div className="rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-3xl px-6 py-20 text-center md:py-28 relative z-10 shadow-2xl">
           <span className="inline-block rounded-full bg-background px-5 py-2 text-sm font-medium text-foreground/90">
-            42+ Integrations
+            40+ Integrations
           </span>
-          <h1 className="mx-auto mt-8 max-w-4xl text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="mx-auto mt-8 max-w-4xl text-5xl font-black leading-[1.05] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 md:text-7xl pb-2">
             Third-party integrations we{" "}
             <span className="text-primary">ship every day</span>
           </h1>
@@ -326,8 +287,8 @@ function IntegrationsPage() {
               Discuss your integration
             </Link>
             <a
-              href="#payments"
-              onClick={(e) => handleSidebarClick(e, "payments")}
+              href="#frontend"
+              onClick={(e) => handleSidebarClick(e, "frontend")}
               className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/60"
             >
               Explore by category
@@ -336,9 +297,9 @@ function IntegrationsPage() {
 
           <div className="mx-auto mt-14 grid max-w-3xl grid-cols-3 gap-6">
             {[
-              { k: "42+", v: "Platforms integrated" },
-              { k: "14", v: "Domains covered" },
-              { k: "50+", v: "Production deployments" },
+              { k: "40+", v: "Platforms integrated" },
+              { k: "8", v: "Domains covered" },
+              { k: "15+", v: "Production deployments" },
             ].map((s) => (
               <div key={s.v}>
                 <div className="text-4xl font-bold text-primary md:text-5xl">
@@ -355,11 +316,11 @@ function IntegrationsPage() {
 
       {/* ── Sticky sidebar + scrolling content ───────────────────────────── */}
       <section id="categories" className="mx-auto max-w-[1400px] px-6 md:px-10 py-16">
-        <div className="flex gap-10">
+        <div className="flex items-start gap-10">
 
           {/* Sticky sidebar — desktop only */}
-          <aside className="hidden lg:block w-56 shrink-0">
-            <nav className="sticky top-24 space-y-0.5">
+          <aside className="hidden lg:block w-56 shrink-0 sticky top-32 self-start">
+            <nav className="space-y-0.5">
               <p className="mb-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 Categories
               </p>
@@ -370,26 +331,26 @@ function IntegrationsPage() {
                     key={c.id}
                     href={`#${c.id}`}
                     onClick={(e) => handleSidebarClick(e, c.id)}
-                    className="group flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm transition-all duration-200"
+                    className="group flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm transition-all duration-300 relative overflow-hidden"
                     style={{
                       background: isActive
-                        ? "rgba(249, 115, 22, 0.12)"
+                        ? "rgba(255, 255, 255, 0.05)"
                         : "transparent",
                       color: isActive
-                        ? "#f97316"
-                        : "hsl(var(--muted-foreground))",
-                      fontWeight: isActive ? 600 : 400,
+                        ? "white"
+                        : "rgba(255, 255, 255, 0.4)",
+                      fontWeight: isActive ? 600 : 500,
                     }}
                   >
                     {/* Active indicator bar */}
                     <span
-                      className="h-4 w-0.5 rounded-full transition-all duration-200"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-1 rounded-r-full transition-all duration-300"
                       style={{
                         background: isActive ? "#f97316" : "transparent",
                         opacity: isActive ? 1 : 0,
                       }}
                     />
-                    {c.name}
+                    <span className="relative z-10">{c.name}</span>
                   </a>
                 );
               })}
@@ -406,9 +367,10 @@ function IntegrationsPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pb-12">
-        <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-card to-card p-10 text-center md:p-16">
-          <h2 className="text-3xl font-bold md:text-5xl">
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pb-12 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[120%] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
+        <div className="rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl p-10 text-center md:p-16 relative z-10 hover:border-primary/20 transition-all">
+          <h2 className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 md:text-5xl pb-1">
             Don't see your stack?
             <br />
             <span className="text-primary">We'll integrate it.</span>

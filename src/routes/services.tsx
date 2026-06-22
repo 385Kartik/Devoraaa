@@ -16,24 +16,24 @@ const services = [
   { icon: Code, title: "Web App Development", desc: "Modern web applications built for speed, scalability, and long-term performance.", features: ["React, Next.js, TanStack", "TypeScript & GraphQL", "Cloud-native hosting"] },
   { icon: Smartphone, title: "Mobile App Development", desc: "Native and cross-platform mobile apps with enterprise-grade architecture.", features: ["React Native & Flutter", "iOS & Android", "Offline-first design"] },
   { icon: Cloud, title: "Custom SaaS Development", desc: "From MVP to full-scale product growth, built for recurring revenue.", features: ["Multi-tenant architecture", "Stripe & billing", "RBAC & SSO"] },
-  { icon: Bot, title: "AI Automation & Voice Agents", desc: "AI agents and workflow automation that boost operational efficiency.", features: ["LLM agents", "Voice & chat bots", "CRM automation"] },
-  { icon: Gamepad2, title: "Game Development", desc: "Immersive games with smooth performance and engaging gameplay.", features: ["Unity & Unreal", "2D & 3D", "Multiplayer ready"] },
-  { icon: Monitor, title: "Desktop App Development", desc: "Reliable desktop apps for productivity tools and enterprise systems.", features: ["Electron & Tauri", "Cross-platform", "Native integrations"] },
+  { icon: Bot, title: "AI Automation & Voice Agents", desc: "AI agents and workflow automation that boost operational efficiency.", features: ["LLM agents", "Chat bots", "CRM automation"] },
 ];
 
 function ServicesPage() {
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center">
-        <p className="text-sm uppercase tracking-widest text-primary">Services</p>
-        <h1 className="mt-3 text-5xl font-bold md:text-6xl">What We Do</h1>
+      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[80%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+        <p className="relative z-10 text-sm uppercase tracking-widest text-primary">Services</p>
+        <h1 className="relative z-10 mt-3 text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 md:text-6xl pb-2">What We Do</h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">End-to-end digital solutions that launch, scale, and transform your business.</p>
       </section>
 
-      <section className="mx-auto mt-16 max-w-[1400px] px-6 md:px-10">
-        <div className="grid gap-6 md:grid-cols-2">
+      <section className="mx-auto mt-16 max-w-[1400px] px-6 md:px-10 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[60%] bg-primary/5 blur-[150px] rounded-full pointer-events-none" />
+        <div className="grid gap-6 md:grid-cols-2 relative z-10">
           {services.map((s) => (
-            <div key={s.title} className="group rounded-2xl bg-card p-8 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
+            <div key={s.title} className="group rounded-2xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl p-8 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.04] hover:border-primary/30 hover:shadow-[0_0_40px_-10px_rgba(255,85,0,0.15)]">
               <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/15 text-primary">
                 <s.icon className="h-7 w-7" />
               </div>
