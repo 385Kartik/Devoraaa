@@ -795,10 +795,11 @@ function ProjectCard({ p }: { p: any }) {
       variants={fadeUp}
       className="group relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/20 shadow-xl transition-transform duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(234,88,12,0.15)]"
     >
+      <Link to={`/case-study/${p.slug}`} className="absolute inset-0 z-30" aria-label={`View ${p.title} Case Study`} />
       {/* Background Image */}
       <img 
         src={p.image} 
-        alt={p.title} 
+        alt={`${p.title} - Custom App Development by devoraaa`} 
         loading="lazy"
         className="h-full w-full object-cover transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-110 group-hover:brightness-[0.3]"
       />
@@ -846,6 +847,7 @@ function ProjectCard({ p }: { p: any }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+import { SEO } from "@/components/SEO";
 
 function HomePage() {
   const { projects } = Route.useLoaderData();

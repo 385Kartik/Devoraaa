@@ -14,6 +14,8 @@ export const Route = createFileRoute("/contact")({
   }),
 });
 
+import { SEO } from "@/components/SEO";
+
 function ContactPage() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,6 +48,10 @@ function ContactPage() {
 
   return (
     <SiteLayout>
+      <SEO 
+        title="Contact devoraaa | Hire Kartik Parmar's Agency"
+        description="Get in touch with devoraaa. Let's discuss your next big project in software development, web, mobile, or AI automation."
+      />
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Hyperspeed
           effectOptions={{

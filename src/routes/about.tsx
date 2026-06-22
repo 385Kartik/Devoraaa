@@ -476,9 +476,15 @@ function TiltCard({
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { SEO } from "@/components/SEO";
+
 function AboutPage() {
   return (
     <SiteLayout>
+      <SEO 
+        title="About devoraaa | Kartik Parmar's Software & AI Agency"
+        description="Meet the team behind devoraaa. Founded by Kartik Parmar, we build high-performance web applications, mobile apps, and AI automation tools."
+      />
       {/* HERO */}
       <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center">
         <motion.h1
@@ -669,9 +675,10 @@ function AboutPage() {
               <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-primary/30 to-transparent opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100 group-hover:blur-2xl" />
               
               <TiltCard rotateDepth={5} translateDepth={10} className="relative overflow-hidden rounded-3xl bg-white/[0.02] border border-white/[0.05] shadow-2xl aspect-[4/5] cursor-pointer z-10 transition-colors duration-500 group-hover:border-primary/40">
+                <Link to="/team/kartik-parmar" className="absolute inset-0 z-20" aria-label="View Kartik Parmar Profile"></Link>
                 <img 
                   src={kartikImg} 
-                  alt="Kartik Parmar — Co-founder & CTO, Devora" 
+                  alt="Kartik Parmar Co-founder and CTO of devoraaa" 
                   className="h-full w-full object-cover scale-3d scale-120 object-top transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100" 
                 />
                 
@@ -687,7 +694,9 @@ function AboutPage() {
               </TiltCard>
             </motion.div>
             <div>
-              <h3 className="text-2xl font-bold">Kartik Parmar</h3>
+              <Link to="/team/kartik-parmar" className="hover:text-primary transition-colors">
+                <h2 className="text-2xl font-bold">Kartik Parmar</h2>
+              </Link>
               <p className="text-primary font-medium mt-1">Co-founder & Chief Technology Officer</p>
               <div className="mt-5 space-y-4 text-muted-foreground">
                 <p>
@@ -727,9 +736,10 @@ function AboutPage() {
               <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-bl from-primary/30 to-transparent opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100 group-hover:blur-2xl" />
 
               <TiltCard rotateDepth={5} translateDepth={10} className="relative overflow-hidden rounded-3xl bg-white/[0.02] border border-white/[0.05] shadow-2xl aspect-[4/5] cursor-pointer z-10 transition-colors duration-500 group-hover:border-primary/40">
+                <Link to="/team/nayan-sachani" className="absolute inset-0 z-20" aria-label="View Nayan Sachani Profile"></Link>
                 <img 
                   src={nayanImg} 
-                  alt="Nayan Sachani — Co-founder, Devora" 
+                  alt="Nayan Sachani Co-founder and Head of Client Experience of devoraaa" 
                   className="h-full w-full object-cover filter contrast-125 transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100" 
                 />
                 
@@ -745,7 +755,9 @@ function AboutPage() {
               </TiltCard>
             </motion.div>
             <div>
-              <h3 className="text-2xl font-bold">Nayan Sachani</h3>
+              <Link to="/team/nayan-sachani" className="hover:text-primary transition-colors">
+                <h2 className="text-2xl font-bold">Nayan Sachani</h2>
+              </Link>
               <p className="text-primary font-medium mt-1">Co-founder & Head of Client Experience</p>
               <div className="mt-5 space-y-4 text-muted-foreground">
                 <p>

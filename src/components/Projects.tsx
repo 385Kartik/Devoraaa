@@ -1,5 +1,6 @@
 import { projectsData } from "../data/projectsData";
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 
 export const Projects = () => {
   return (
@@ -30,10 +31,11 @@ export const Projects = () => {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className="group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10"
             >
+              <Link to={`/case-study/${project.slug}`} className="absolute inset-0 z-30" aria-label={`View ${project.title} Case Study`} />
               <div className="aspect-video overflow-hidden bg-black/50 relative">
                 <img 
                   src={project.image} 
-                  alt={project.title} 
+                  alt={`${project.title} - Custom Software by devoraaa & Kartik Parmar`} 
                   className="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

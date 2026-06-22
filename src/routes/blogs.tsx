@@ -26,11 +26,17 @@ export const Route = createFileRoute("/blogs")({
   }),
 });
 
+import { SEO } from "@/components/SEO";
+
 function BlogsPage() {
   const { posts } = Route.useLoaderData();
 
   return (
     <SiteLayout>
+      <SEO 
+        title="Blog & Insights | devoraaa"
+        description="Read the latest insights on software development, AI, and business automation from Kartik Parmar and the devoraaa team."
+      />
       <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[80%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
         <p className="relative z-10 text-sm uppercase tracking-widest text-primary">Blogs</p>

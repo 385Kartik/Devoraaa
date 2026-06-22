@@ -19,6 +19,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CaseStudyIndexRouteImport } from './routes/case-study.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TeamNayanSachaniRouteImport } from './routes/team.nayan-sachani'
+import { Route as TeamKartikParmarRouteImport } from './routes/team.kartik-parmar'
 import { Route as LegalSlugRouteImport } from './routes/legal.$slug'
 import { Route as CaseStudySlugRouteImport } from './routes/case-study.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -79,6 +81,16 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const TeamNayanSachaniRoute = TeamNayanSachaniRouteImport.update({
+  id: '/team/nayan-sachani',
+  path: '/team/nayan-sachani',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamKartikParmarRoute = TeamKartikParmarRouteImport.update({
+  id: '/team/kartik-parmar',
+  path: '/team/kartik-parmar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalSlugRoute = LegalSlugRouteImport.update({
   id: '/legal/$slug',
   path: '/legal/$slug',
@@ -138,6 +150,8 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/case-study/$slug': typeof CaseStudySlugRoute
   '/legal/$slug': typeof LegalSlugRoute
+  '/team/kartik-parmar': typeof TeamKartikParmarRoute
+  '/team/nayan-sachani': typeof TeamNayanSachaniRoute
   '/admin/': typeof AdminIndexRoute
   '/case-study/': typeof CaseStudyIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
@@ -157,6 +171,8 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/case-study/$slug': typeof CaseStudySlugRoute
   '/legal/$slug': typeof LegalSlugRoute
+  '/team/kartik-parmar': typeof TeamKartikParmarRoute
+  '/team/nayan-sachani': typeof TeamNayanSachaniRoute
   '/admin': typeof AdminIndexRoute
   '/case-study': typeof CaseStudyIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
@@ -179,6 +195,8 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/case-study/$slug': typeof CaseStudySlugRoute
   '/legal/$slug': typeof LegalSlugRoute
+  '/team/kartik-parmar': typeof TeamKartikParmarRoute
+  '/team/nayan-sachani': typeof TeamNayanSachaniRoute
   '/admin/': typeof AdminIndexRoute
   '/case-study/': typeof CaseStudyIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
@@ -202,6 +220,8 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/case-study/$slug'
     | '/legal/$slug'
+    | '/team/kartik-parmar'
+    | '/team/nayan-sachani'
     | '/admin/'
     | '/case-study/'
     | '/admin/blog/$id'
@@ -221,6 +241,8 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/case-study/$slug'
     | '/legal/$slug'
+    | '/team/kartik-parmar'
+    | '/team/nayan-sachani'
     | '/admin'
     | '/case-study'
     | '/admin/blog/$id'
@@ -242,6 +264,8 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/case-study/$slug'
     | '/legal/$slug'
+    | '/team/kartik-parmar'
+    | '/team/nayan-sachani'
     | '/admin/'
     | '/case-study/'
     | '/admin/blog/$id'
@@ -262,6 +286,8 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   BlogSlugRoute: typeof BlogSlugRoute
   LegalSlugRoute: typeof LegalSlugRoute
+  TeamKartikParmarRoute: typeof TeamKartikParmarRoute
+  TeamNayanSachaniRoute: typeof TeamNayanSachaniRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -335,6 +361,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/team/nayan-sachani': {
+      id: '/team/nayan-sachani'
+      path: '/team/nayan-sachani'
+      fullPath: '/team/nayan-sachani'
+      preLoaderRoute: typeof TeamNayanSachaniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/kartik-parmar': {
+      id: '/team/kartik-parmar'
+      path: '/team/kartik-parmar'
+      fullPath: '/team/kartik-parmar'
+      preLoaderRoute: typeof TeamKartikParmarRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/legal/$slug': {
       id: '/legal/$slug'
@@ -449,6 +489,8 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesRoute: ServicesRoute,
   BlogSlugRoute: BlogSlugRoute,
   LegalSlugRoute: LegalSlugRoute,
+  TeamKartikParmarRoute: TeamKartikParmarRoute,
+  TeamNayanSachaniRoute: TeamNayanSachaniRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

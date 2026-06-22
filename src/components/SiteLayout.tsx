@@ -101,7 +101,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         >
           <Link to="/" className="flex items-center gap-2 group">
             <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden bg-white text-black font-black transition-transform group-hover:scale-110">
-              <img src="/Devora_logo.png" alt="Devoraaa Logo" className="h-full w-full object-cover" />
+              <img src="/Devora_logo.png" alt="devoraaa logo - High-End Software & AI Development Agency by Kartik Parmar" className="h-full w-full object-cover" />
             </div>
             <span className="text-xl font-black tracking-tighter text-white">devoraaa</span>
           </Link>

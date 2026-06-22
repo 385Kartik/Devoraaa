@@ -19,9 +19,15 @@ const services = [
   { icon: Bot, title: "AI Automation & Voice Agents", desc: "AI agents and workflow automation that boost operational efficiency.", features: ["LLM agents", "Chat bots", "CRM automation"] },
 ];
 
+import { SEO } from "@/components/SEO";
+
 function ServicesPage() {
   return (
     <SiteLayout>
+      <SEO 
+        title="Our Services | devoraaa Software & AI Development"
+        description="devoraaa offers end-to-end custom software development, mobile apps, SaaS platforms, and AI automation built by Kartik Parmar's elite team."
+      />
       <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-20 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[80%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
         <p className="relative z-10 text-sm uppercase tracking-widest text-primary">Services</p>

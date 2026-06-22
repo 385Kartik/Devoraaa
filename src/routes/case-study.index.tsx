@@ -1,3 +1,4 @@
+import { SEO } from "@/components/SEO";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
@@ -61,8 +62,13 @@ function CaseStudyPage() {
     ? projects 
     : projects.filter((s: any) => s.platform.includes(filter) || s.industry.includes(filter));
 
+
   return (
     <SiteLayout>
+      <SEO 
+        title="Case Studies & Work | devoraaa"
+        description="Explore the portfolio of devoraaa. See how Kartik Parmar and his team have transformed businesses with custom software and AI."
+      />
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Vortex backgroundColor="transparent" className="w-full h-full" />
       </div>
@@ -121,6 +127,7 @@ function CaseStudyPage() {
                   key={s.slug} 
                   className="group relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-[2.5rem] bg-muted shadow-2xl transition-transform duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(234,88,12,0.2)]"
                 >
+                  <Link to={`/case-study/${s.slug}`} className="absolute inset-0 z-30" aria-label={`View ${s.title} Case Study`} />
                   {/* Background Image */}
                   <img 
                     src={image} 
