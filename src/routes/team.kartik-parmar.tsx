@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SEO } from "@/components/SEO";
 import { motion } from "framer-motion";
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Github, Instagram, Linkedin, Mail } from "lucide-react";
 import { images } from "@/assets/images";
 
 const kartikImg = images.kartik;
@@ -33,13 +33,13 @@ function KartikParmarProfile() {
               />
             </div>
             <div className="mt-6 flex justify-center gap-4">
-              <a href="#" className="p-3 bg-white/5 hover:bg-primary/20 rounded-full transition-colors border border-white/10">
-                <Twitter className="w-5 h-5" />
+              <a href="https://www.instagram.com/p_kartik_385/" target="_blank" rel="noreferrer" className="p-3 bg-white/5 hover:bg-primary/20 rounded-full transition-colors border border-white/10" aria-label="Instagram">
+                <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="p-3 bg-white/5 hover:bg-primary/20 rounded-full transition-colors border border-white/10">
+              <a href="https://www.linkedin.com/in/parmarkartik385/" target="_blank" rel="noreferrer" className="p-3 bg-white/5 hover:bg-primary/20 rounded-full transition-colors border border-white/10" aria-label="LinkedIn">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="#" className="p-3 bg-white/5 hover:bg-primary/20 rounded-full transition-colors border border-white/10">
+              <a href="https://github.com/385Kartik" target="_blank" rel="noreferrer" className="p-3 bg-white/5 hover:bg-primary/20 rounded-full transition-colors border border-white/10" aria-label="GitHub">
                 <Github className="w-5 h-5" />
               </a>
             </div>
@@ -74,7 +74,7 @@ function KartikParmarProfile() {
               <div>
                 <h3 className="font-bold text-white mb-2">Contact</h3>
                 <ul className="space-y-1 text-muted-foreground">
-                  <li>hi@devoraaa.com</li>
+                  <li>officialdevora1@gmail.com</li>
                   <li>Based in India</li>
                 </ul>
               </div>
